@@ -3,18 +3,13 @@ import Login from "./pages/login"
 import Register from './pages/register';
 import Home from './pages/home';
 import NotePage from './pages/notepage';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import About from './pages/about';
+import { Switch, Route } from "react-router-dom";
 
 
 function App() {
-  const user = true //check whether user is logged in
-  return (
-    <Router>
+  const user = false //check whether user is logged in
+  return (    
       <Switch>
         <Route path="/register">
           { user ? <Home /> : <Register /> }
@@ -29,8 +24,10 @@ function App() {
         <Route path="/page/:pageId">
           {user ? <NotePage /> : <Login />}
         </Route>
+        <Route Path="/about">
+          <About />
+        </Route>
       </Switch>
-    </Router>
   );
 }
 

@@ -1,6 +1,7 @@
 import "./register.css"
 import TopBar from "../components/topbar";
 import React, { useRef } from "react";
+import { Link } from "react-router-dom"
 export default function Register() {
     const accountRef = useRef()
     const passwordRef = useRef()
@@ -13,7 +14,7 @@ export default function Register() {
   
     return (
         <>
-            {/* <TopBar /> */}
+            <TopBar />
             <div className="register">       
                 <div className="registerTitle">Register</div>     
                 <form className="registerForm">            
@@ -32,7 +33,9 @@ export default function Register() {
                     <button type="submit" className="registerButton" onClick={handleSubmit}>Register</button>
                 </form>            
             </div>
-            <button type="submit" className="rLoginButton">Login</button>
+            <button className="rLoginButton">
+                <Link to="/login">Login</Link>                
+            </button>
         </>
     )
 }

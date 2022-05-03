@@ -1,6 +1,7 @@
 import "./login.css"
 import TopBar from '../components/topbar';
 import React, { useRef } from "react";
+import { Link } from "react-router-dom"
 export default function Login() {
     const accountRef = useRef()
     const passwordRef = useRef()
@@ -28,7 +29,9 @@ export default function Login() {
                     <button type="submit" className="loginButton" onClick={handleSubmit}>Login</button>
                 </form>
             </div>
-            <button type="submit" className="lRegisterButton">Register</button>
+            <button className="lRegisterButton">
+                <Link to="/register">Register</Link>
+            </button>
         </>
     )
 }
