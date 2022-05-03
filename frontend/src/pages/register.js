@@ -13,7 +13,7 @@ export default function Register() {
   
     return (
         <>
-            <TopBar/>
+            {/* <TopBar /> */}
             <div className="register">       
                 <div className="registerTitle">Register</div>     
                 <form className="registerForm">            

@@ -23,6 +23,8 @@ Reference:
     - center block: https://www.youtube.com/watch?v=Ba-Ly1EQg2A
 - React Basic
     - https://reactjs.org/docs/introducing-jsx.html
+- Router
+    - link pages: https://v5.reactrouter.com/web/guides/quick-start
 
 ToDo:
 [ ] Home Page

@@ -1,12 +1,19 @@
 import "./topbar.css"
+import { NavLink } from "react-router-dom";
+
 export default function TopBar() {
+    const user = true //check whether user is logged in 
     return (
-        <>
-            <div className="topBar">
-                <a className="topBarIcon">Home</a>
-                <a className="topBarIcon">Login</a>
-                <a className="topBarIcon">About</a>
-            </div>
-        </>
+        <ul className="topBar">
+            <li className="navBarDest">
+                <NavLink to="/home/123">Home</NavLink>
+            </li>
+            <li className="navBarDest">
+                <NavLink to="/login">Login</NavLink>
+            </li>
+            <li className="navBarDest">
+                <NavLink to="/about">About</NavLink>
+            </li>                    
+        </ul>
     )
 }
