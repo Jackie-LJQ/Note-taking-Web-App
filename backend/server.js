@@ -3,7 +3,7 @@ const app=express()
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 var uri = 'mongodb://localhost:27017'
-const PORT = 3000
+const PORT = 8000
 // console.log(uri)
 const {MongoClient, ObjectId} = require('mongodb')
 MongoClient.connect(uri, (err,mongoConnect)=>{
@@ -18,11 +18,11 @@ MongoClient.connect(uri, (err,mongoConnect)=>{
 
 async function registerUser(params) {
     let email = params.email
-    let userName = params.name
+    let userName = params.username
     let passWord = params.password
     let existUser = await dataBase.collection("user").find({'email':email}).toArray()
     if (existUser.length!=0) {
-        return [`email ${email} already registered, please use login!`, null]
+        return [`${email} has registered. Please use login!`, null]
     }
     
     let res = await dataBase.collection("user").insertOne({'email':email, 'userName':userName, "password":passWord})
@@ -30,32 +30,32 @@ async function registerUser(params) {
     return [null, Uid]
 }
 
-app.get('/ping', (req, res, next)=>{
+app.get('/api/ping', (req, res, next)=>{
     res.writeHead(200)
     res.write("Hello from server!\n")
     res.end()
     next()
 })
 
-app.get('/login', (req, res, next)=>{
+app.get('/api/login', (req, res, next)=>{
     res.writeHead(200)
     res.write("login page")
 })
 
-app.post('/login', (req, res, next)=>{
+app.post('/api/login', (req, res, next)=>{
     // curl -X POST -H "Content-Type: application/json" -d '{"email":"123@gmail.com", "password":"123"}' http://localhost:3000/login
 
 })
 
-app.post('/register', (req, res, next)=>{
-    // curl -X POST -H "Content-Type: application/json" -d '{"email":"123@gmail.com","name":"jq", "password":"123"}' http://localhost:3000/register
+app.post('/api/register', (req, res, next)=>{
+    // curl -X POST -H "Content-Type: application/json" -d '{"email":"123@gmail.com","username":"jq", "password":"123"}' http://localhost:3000/register
     try {
         registerUser(req.body).then((ret)=>{
             let message = ret[0]
             let Uid = ret[1]
             if (message) {
-                res.writeHead(422)
-                res.write("Register Failed: " + message + "\n")
+                res.writeHead(202)
+                res.write("Register Failed. " + message + "\n")
                 res.end()
             }
             else {
@@ -63,7 +63,7 @@ app.post('/register', (req, res, next)=>{
                 res.writeHead(200)
                 res.write(`User ${Uid} registered successfully!\n`)
                 res.end()                
-            }  
+            }
             next()             
         })
         
@@ -72,6 +72,6 @@ app.post('/register', (req, res, next)=>{
     }
 })
 
-app.get("/note/:noteId", (req, res, next)=>{
+app.get("/api/note/:noteId", (req, res, next)=>{
     
 })

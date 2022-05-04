@@ -1,15 +1,49 @@
 import "./register.css"
 import TopBar from "../components/topbar";
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom"
+import axios from "axios";
+
 export default function Register() {
-    const accountRef = useRef()
-    const passwordRef = useRef()
-    
-    const handleSubmit = (event) => {
-      console.log('submitted: ' + accountRef.current.value + " " + passwordRef.current.value)
-    //   console.log(event.target)
-    //   event.preventDefault();
+    let [username, setUsername] = useState()
+    let [password, setPassword] = useState()
+    let [email, setEmail] = useState()
+    let [errMessage, setErrMessage] = useState("")
+
+    const regex = /[a-zA-Z]/
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        if (!email.includes("@")) {
+            setErrMessage("Invalid email address")
+            return
+        }
+        if (password.length < 4) {
+            setErrMessage("Password length must exceed 4")
+            return
+        }
+        if (!regex.test(password)) {
+            setErrMessage("must contain alphabet letter")
+            return
+        }
+        setErrMessage("")
+        try {
+            const res = await axios.post(`/api/register`, {
+                username:username,
+                email:email,
+                password:password,
+              })
+            if (res.status===202) {
+                setErrMessage(res.data)
+            }
+            else if (res.data){
+                window.location.replace("/login");
+            }
+            else {
+                setErrMessage("Something went wrong. Please try agsin.")
+            }
+        } catch (err) {
+            setErrMessage("Something went wrong. Please try agsin.")
+        }
     }
   
     return (
@@ -17,20 +51,36 @@ export default function Register() {
             <TopBar />
             <div className="register">       
                 <div className="registerTitle">Register</div>     
-                <form className="registerForm">            
-                    <div className="registerBlock">
-                        <label className="registerLabel">Email Address</label>
-                        <input type="text" placeholder="Enter your email address"/>
-                    </div>
+                <form className="registerForm">    
                     <div className="registerBlock">
                         <label className="registerLabel">User Name</label>
-                        <input type="text" placeholder="Enter your User Name"/>
-                    </div>
+                        <input 
+                            type="text" 
+                            placeholder="Enter your User Name"
+                            onChange={(e)=>{setUsername(e.target.value)}}
+                        />
+                    </div>        
+                    <div className="registerBlock">
+                        <label className="registerLabel">Email Address</label>
+                        <input 
+                            type="text" 
+                            placeholder="Enter your email address"
+                            onChange={(e)=>{setEmail(e.target.value)}}
+                        />
+                    </div>                    
                     <div className="registerBlock">
                         <label className="registerLabel">Password</label>
-                        <input type="password" placeholder="Enter your password" />
+                        <input 
+                            type="password" 
+                            placeholder="Enter your password" 
+                            onChange={(e)=>setPassword(e.target.value)}
+                        />
                     </div>
-                    <button type="submit" className="registerButton" onClick={handleSubmit}>Register</button>
+                    <div className="errorBlock">{errMessage}</div>
+                    <button 
+                        type="submit" 
+                        className="registerButton" 
+                        onClick={handleSubmit}>Register</button>
                 </form>            
             </div>
             <button className="rLoginButton">
