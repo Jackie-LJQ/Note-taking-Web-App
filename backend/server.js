@@ -42,9 +42,34 @@ app.get('/api/login', (req, res, next)=>{
     res.write("login page")
 })
 
-app.post('/api/login', (req, res, next)=>{
+app.post('/api/login', async (req, res, next)=>{
     // curl -X POST -H "Content-Type: application/json" -d '{"email":"123@gmail.com", "password":"123"}' http://localhost:3000/login
-
+    // db.user.find({"email":"jiaqi@usc.edu"})
+    try {
+        let email = req.body.email
+        let passWord = req.body.password
+        let existUser = await dataBase.collection("user").find({'email':email}).toArray()
+        if (existUser.length==0) {
+            res.writeHead(406)
+            res.write("Account doesn't exists. Please register.")
+            res.end()
+            return next()            
+        }
+        existUser = existUser[0]
+        if (existUser.password !== passWord) {
+            res.writeHead(400)
+            res.write("Password is incorrect.")
+            res.end()
+        }
+        else {
+            res.writeHead(200)
+            res.write(existUser._id.toString())
+            res.end()
+        }
+        next()
+    } catch(err) {
+        throw err
+    }
 })
 
 app.post('/api/register', (req, res, next)=>{

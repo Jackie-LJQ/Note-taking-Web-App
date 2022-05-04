@@ -1,22 +1,33 @@
 import "./login.css"
-import TopBar from '../components/topbar';
 import React, { useState } from "react";
 import { Link } from "react-router-dom"
 import axios from "axios"
-export default function Login(user, setUser) {
+export default function Login() {
     let [password, setPassword] = useState()
     let [email, setEmail] = useState()
     let [errMessage, setErrMessage] = useState("")
 
     const handleSubmit = async (e) => {
+        e.preventDefault()
         try {
             let res = await axios.post("/api/login", {
-                email,
-                password
+                email:email,
+                password:password
             })
-
+            if (res.data) {
+                localStorage.setItem("user", res.data)
+                window.location.replace("/home")
+            }
+            else {
+                setErrMessage("Something unknown happens. Please try again.")
+            }
         } catch(err) {
-            setErrMessage("Something went wrong. Please try agsin.")
+            if (err.response.status===400 || err.response.status===406) {
+                setErrMessage(err.response.data)
+            }
+            else {
+                setErrMessage("Something unknown happens. Please try again.")
+            }            
         }
     }
   
@@ -41,6 +52,7 @@ export default function Login(user, setUser) {
                             onChange={(e)=>{setPassword(e.target.value)}}
                         />
                     </div>
+                    <div className="errorBlock">{errMessage}</div>
                     <button type="submit" className="loginButton" onClick={handleSubmit}>Login</button>
                 </form>
             </div>
