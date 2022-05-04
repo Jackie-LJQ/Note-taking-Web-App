@@ -59,9 +59,9 @@ app.post('/api/register', (req, res, next)=>{
                 res.end()
             }
             else {
-                // res.redirect(303, `/user/${Uid}`)
+                Uid = Uid.toString()
                 res.writeHead(200)
-                res.write(`User ${Uid} registered successfully!\n`)
+                res.write(Uid)
                 res.end()                
             }
             next()             

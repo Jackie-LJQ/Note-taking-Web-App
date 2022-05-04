@@ -1,5 +1,4 @@
 import "./register.css"
-import TopBar from "../components/topbar";
 import React, { useState } from "react";
 import { Link } from "react-router-dom"
 import axios from "axios";
@@ -36,19 +35,19 @@ export default function Register() {
                 setErrMessage(res.data)
             }
             else if (res.data){
-                window.location.replace("/login");
+                localStorage.setItem("user", res.data)
+                window.location.replace("/home")
             }
-            else {
+            else {                
                 setErrMessage("Something went wrong. Please try agsin.")
             }
         } catch (err) {
+            // console.log(err)
             setErrMessage("Something went wrong. Please try agsin.")
         }
     }
-  
     return (
         <>
-            <TopBar />
             <div className="register">       
                 <div className="registerTitle">Register</div>     
                 <form className="registerForm">    
