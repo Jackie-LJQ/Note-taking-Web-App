@@ -82,9 +82,6 @@ export default function Register() {
                         onClick={handleSubmit}>Register</button>
                 </form>            
             </div>
-            <button className="rLoginButton">
-                <Link to="/login">Login</Link>                
-            </button>
         </>
     )
 }

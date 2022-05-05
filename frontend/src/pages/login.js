@@ -56,9 +56,6 @@ export default function Login() {
                     <button type="submit" className="loginButton" onClick={handleSubmit}>Login</button>
                 </form>
             </div>
-            <button className="lRegisterButton">
-                <Link to="/register">Register</Link>
-            </button>
         </>
     )
 }

@@ -7,23 +7,30 @@ export default function TopBar({user, setUser}) {
         localStorage.setItem("user", null)
     }
     return (
+        <div>
         <ul className="topBar">
             <li className="navBarItem">
-                <Link to="/home/123">Home</Link>
-            </li>
-            {
-                user ? 
-                <li className="navBarItem" onClick={handleLogout}>
-                    <Link>{user && "Logout" }</Link>
-                </li>  :
-                <li className="navBarItem">
-                    <Link to="/login">{!user && "Login"}</Link>
-                </li>
-            }           
+                <Link to="/home">Home</Link>
+            </li>           
             
             <li className="navBarItem">
-                <Link to="/about">About</Link>
-            </li>                    
-        </ul>
+                <Link to="/tutorial">Tutorial</Link>
+            </li>  
+            {
+                user ? 
+                <button className="lRegisterButton" onClick={handleLogout}>
+                    <Link>{user && "Logout" }</Link>
+                </button>  :
+                <>
+                <button className="lRegisterButton">
+                    <Link to="/register">Register</Link>
+                </button>
+                <button className="rLoginButton">
+                <Link to="/login">Login</Link>                
+                </button>  
+                </>
+            }                       
+        </ul>        
+        </div>
     )
 }

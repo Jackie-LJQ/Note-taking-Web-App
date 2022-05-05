@@ -38,8 +38,8 @@ async function postNote(title, content, author, noteId) {
         newNoteId = noteId
     }
     else {
-        //create note: share group is null when create a new note
-        let res = await dataBase.collection("notes").insertOne({"title":title, "content":content, "author":author, "group":null})
+        //create note: share group only contains author when create a new note
+        let res = await dataBase.collection("notes").insertOne({"title":title, "content":content, "author":author, "group":[author]})
         newNoteId = await res.insertedId.toString()
         
     }
@@ -134,8 +134,8 @@ app.get("/api/note/:noteId", async (req, res, next)=>{
 // curl -X POST "http://localhost:8000/api/note/62739b3b44a5a324f4f68f6f"
 app.post("/api/note/:noteId", async (req, res, next)=>{
     try {
-        let title = "Second Hello"
-        let content = "Second Hello from post note"
+        let title = req.body.title
+        let content = req.body.content
         let noteId = await postNote(title, content, null, req.params.noteId)
         res.writeHead(200)
         res.write(noteId)

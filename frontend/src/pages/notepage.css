@@ -25,10 +25,33 @@
     padding-top: 10px;
     font-size: 15px;
     font-style: italic;
+    margin-left: 10px;
 }
 
 
 .noteContent{
-    margin: 20px;
+    margin: 80px;
     line-height: 30px;
+    margin-top: 10px;
+}
+
+.noteTitle{
+    margin-left: 50px;
+}
+
+.titleInput{
+    font-size: 50px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+.contentInput{
+    font-size: 20px;
+    border: none;
+    outline: none;
+    margin: 10px;
+    width: 100%
 }

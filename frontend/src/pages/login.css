@@ -50,15 +50,4 @@
     border-radius: 10px;
 }
 
-.lRegisterButton{
-    position: absolute;
-    top: 12px;
-    right: 30px;
-    height: 26px;
-    width: 100px;
-    font-size: 20px;
-    color: rgb(236, 232, 232);
-    border: none;
-    background-color: #88b7df;
-    border-radius: 10px;
-}
+
