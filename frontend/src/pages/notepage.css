@@ -1,0 +1,34 @@
+.pageIcon{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: absolute;
+    top: 50px;
+    right: 0px;
+}
+.pageIconItem{
+    font-size: 20px;
+    padding: 10px;
+}
+
+.pageIconItem:nth-child(1){
+    color: rgb(6, 128, 128);
+}
+.pageIconItem:nth-child(2){
+    color: rgba(208, 9, 9, 0.815);
+}
+.pageIconItem:nth-child(3){
+    color: rgb(0, 0, 91);
+}
+
+.editDate{
+    padding-top: 10px;
+    font-size: 15px;
+    font-style: italic;
+}
+
+
+.noteContent{
+    margin: 20px;
+    line-height: 30px;
+}
