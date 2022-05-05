@@ -1,7 +1,14 @@
+import './home.css'
+import Posts from '../components/posts'
+import Header from '../components/header'
+
 export default function Home({user}){
     return (
-        <> 
-        <h1>This is Home Page of userId: {user} </h1>
+        <>
+        <Header user={user} />
+        <div className="home">            
+            <Posts />
+        </div>
         </>
     )
 }
