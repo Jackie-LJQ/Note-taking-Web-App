@@ -18,7 +18,8 @@ Currently only support change compoent tag in `Note-taking-Web-App/frontend/src/
 
 Reference:
 - React Blog
-    - https://www.youtube.com/watch?v=tlTdbc5byAs
+    - UI: https://www.youtube.com/watch?v=tlTdbc5byAs
+    - Interface with backend https://www.youtube.com/watch?v=LelifxOrzvw&list=PLj-4DlPRT48lGpll2kC4wOsLj7SEV_lYu&index=3
 - CSS style:
     - center block: https://www.youtube.com/watch?v=Ba-Ly1EQg2A
 - React Basic

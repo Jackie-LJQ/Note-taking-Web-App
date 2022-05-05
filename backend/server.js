@@ -30,6 +30,23 @@ async function registerUser(params) {
     return [null, Uid]
 }
 
+async function postNote(title, content, author, noteId) {
+    let newNoteId
+    if (noteId) {
+        //update note: update note doesn't change the author
+        await dataBase.collection("notes").updateOne({"_id":new ObjectId(noteId)}, {$set:{"title":title, "content":content}})
+        newNoteId = noteId
+    }
+    else {
+        //create note: share group is null when create a new note
+        let res = await dataBase.collection("notes").insertOne({"title":title, "content":content, "author":author, "group":null})
+        newNoteId = await res.insertedId.toString()
+        
+    }
+    await dataBase.collection("notes").updateOne({"_id":new ObjectId(newNoteId)}, {$set:{"timeStamp":new Date()}})
+    return newNoteId
+}
+
 app.get('/api/ping', (req, res, next)=>{
     res.writeHead(200)
     res.write("Hello from server!\n")
@@ -37,10 +54,6 @@ app.get('/api/ping', (req, res, next)=>{
     next()
 })
 
-app.get('/api/login', (req, res, next)=>{
-    res.writeHead(200)
-    res.write("login page")
-})
 
 app.post('/api/login', async (req, res, next)=>{
     // curl -X POST -H "Content-Type: application/json" -d '{"email":"123@gmail.com", "password":"123"}' http://localhost:3000/login
@@ -97,6 +110,53 @@ app.post('/api/register', (req, res, next)=>{
     }
 })
 
-app.get("/api/note/:noteId", (req, res, next)=>{
-    
+app.get("/api/note/:noteId", async (req, res, next)=>{
+    try {
+        const noteId = req.params.noteId
+        let note = await dataBase.collection("notes").find({"_id":new ObjectId(noteId)}).toArray()
+        if (note.length === 0) {
+            res.writeHead(202)
+            res.write("Note doesn't exist.")
+            res.end()
+        }
+        else {
+            note = JSON.stringify(note[0])
+            res.writeHead(200)
+            res.write(note)
+            res.end()
+        }
+        next()
+    } catch(err) {
+        throw err
+    }  
+})
+
+// curl -X POST "http://localhost:8000/api/note/62739b3b44a5a324f4f68f6f"
+app.post("/api/note/:noteId", async (req, res, next)=>{
+    try {
+        let title = "Second Hello"
+        let content = "Second Hello from post note"
+        let noteId = await postNote(title, content, null, req.params.noteId)
+        res.writeHead(200)
+        res.write(noteId)
+        res.end()
+        next()
+    } catch(err) {
+        console.log(err)
+    }
+})
+
+// curl -X POST "http://localhost:8000/api/create"
+app.post("/api/create", async (req, res, next)=>{
+    try {
+        let title = ""
+        let content = ""
+        let noteId = await postNote(title, content, "jiaqi", null)
+        res.writeHead(200)
+        res.write(noteId)
+        res.end()
+        next()
+    } catch(err) {
+        console.log(err)
+    }
 })
