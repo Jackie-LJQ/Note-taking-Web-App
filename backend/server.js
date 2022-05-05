@@ -147,16 +147,31 @@ app.post("/api/note/:noteId", async (req, res, next)=>{
 })
 
 // curl -X POST "http://localhost:8000/api/create"
-app.post("/api/create", async (req, res, next)=>{
+app.post("/api/createNew", async (req, res, next)=>{
     try {
-        let title = ""
-        let content = ""
-        let noteId = await postNote(title, content, "jiaqi", null)
+        let author = req.body.author
+        let noteId = await postNote("", "", author, null)
         res.writeHead(200)
         res.write(noteId)
         res.end()
         next()
     } catch(err) {
         console.log(err)
+    }
+})
+
+app.delete("/api/note/:noteId", async(req, res, next)=>{
+    try {
+        let ret = await dataBase.collection("notes").deleteOne({"_id":new ObjectId(req.params.noteId)})
+        if (ret.deletedCount===0) {
+            res.writeHead(204)
+        }
+        else {
+            res.writeHead(200)
+        }
+        res.end()
+        next()
+    }catch(err) {
+        throw (err)
     }
 })

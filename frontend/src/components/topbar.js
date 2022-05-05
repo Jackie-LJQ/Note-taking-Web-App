@@ -19,7 +19,7 @@ export default function TopBar({user, setUser}) {
             {
                 user ? 
                 <button className="lRegisterButton" onClick={handleLogout}>
-                    <Link>{user && "Logout" }</Link>
+                    <Link to="/tutorial">{user && "Logout" }</Link>
                 </button>  :
                 <>
                 <button className="lRegisterButton">

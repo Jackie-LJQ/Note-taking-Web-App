@@ -1,5 +1,4 @@
 import "./notepage.css"
-import TopBar from "../components/topbar"
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
@@ -13,40 +12,70 @@ export default function NotePage(){
     let [content, setContent]  = useState("")
     let [timeStamp, setTimeStamp] = useState("")
     let [ownership, setOwnership] = useState(false)
-    // distinguish authentation and ownership
+    let [noteId, setNoteId] = useState(null)
     
     useEffect(()=>{
-        const getPost = async ()=>{
+        const getNote = async ()=>{
             const res = await axios.get("/api/note/"+path)
             const noteInfo = res.data
-            console.log(noteInfo)
             setContent(noteInfo.content)
             setTitle(noteInfo.title)
             setTimeStamp(noteInfo.timeStamp)
-            setOwnership(localStorage.getItem("user") === noteInfo._id)
+            setOwnership(localStorage.getItem("user") === noteInfo.author)
+            setNoteId(path)
         }
-        getPost()
+        const createNote = async ()=>{
+            let author = localStorage.getItem("user")
+            const res = await axios.post("/api/createNew", {
+                author:author
+            })
+            let newDate = new Date()
+            newDate = newDate.toString()
+            setTimeStamp(newDate)
+            setOwnership(true)
+            setNoteId(res.data)
+            setEditMode(true)
+        }
+        if (path!="create"){
+            getNote()
+        }
+        else {
+            createNote()
+        }
     }, [path])
 
     const handleSave = async() => {
         try {
-            axios.post("/api/note/"+path, {
+            axios.post("/api/note/"+noteId, {
                 title:title,
                 content:content            
             })
-            window.location.replace("/note/"+path)
+            window.location.replace("/note/"+noteId)
         }catch(err) {
             console.log(err)
         }
     }
-    
+
+    const handleDelete = async() => {
+        try {
+            let res = await axios.delete("/api/note/"+noteId)
+            if (res.status===200) {
+                window.location.replace("/home")
+            }
+            else {
+                console.log("Fail")
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
     return (
         <div className="notepage">    
             <div className="editDate">Last Edit at: {timeStamp}</div>
             <div className="pageIcon">            
                 {ownership&&!editMode ? <i className="pageIconItem fa-solid fa-square-pen" onClick={(e)=>{setEditMode(true)}}></i> : <></>}
-                {editMode ? <i class="pageIconItem fa-solid fa-floppy-disk" onClick={handleSave}></i> : <></>}
-                {ownership ? <i className="pageIconItem fa-solid fa-trash-can"></i> : <></>}
+                {editMode ? <i className="pageIconItem fa-solid fa-floppy-disk" onClick={handleSave}></i> : <></>}
+                {ownership ? <i className="pageIconItem fa-solid fa-trash-can" onClick={handleDelete}></i> : <></>}
                 {ownership ? <i className="pageIconItem fa-solid fa-share-nodes"></i> : <></>}
             </div>
             {
@@ -55,11 +84,17 @@ export default function NotePage(){
                     <input 
                         className="titleInput" 
                         value={title} 
+                        placeholder="Title"
                         onChange={(e)=>{setTitle(e.target.value)}} 
-                        autoFocus
                     />
                     <div></div>
-                    <textarea className="contentInput" value={content} onChange={(e)=>{setContent(e.target.value)}} />
+                    <textarea 
+                        className="contentInput" 
+                        value={content} 
+                        placeholder="Enter note here..."
+                        onChange={(e)=>{setContent(e.target.value)}} 
+
+                    />
                 </>
             ) : 
             (   
