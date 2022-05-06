@@ -5,24 +5,22 @@ import { useLocation } from "react-router-dom"
 
 export default function NotePage(){
     const location = useLocation();
-    const path = location.pathname.split("/")[2];
-    // noteId = "62739b3b44a5a324f4f68f6f"
     let [editMode, setEditMode] = useState(false)
     let [title, setTitle] = useState("")
     let [content, setContent]  = useState("")
     let [timeStamp, setTimeStamp] = useState("")
     let [ownership, setOwnership] = useState(false)
-    let [noteId, setNoteId] = useState(null)
+    let [noteId, setNoteId] = useState(location.pathname.split("/")[2])
     
     useEffect(()=>{
         const getNote = async ()=>{
-            const res = await axios.get("/api/note/"+path)
+            const res = await axios.get("/api/note/"+noteId)
             const noteInfo = res.data
             setContent(noteInfo.content)
             setTitle(noteInfo.title)
             setTimeStamp(noteInfo.timeStamp)
             setOwnership(localStorage.getItem("user") === noteInfo.author)
-            setNoteId(path)
+            setNoteId(noteId)
         }
         const createNote = async ()=>{
             let author = localStorage.getItem("user")
@@ -36,13 +34,13 @@ export default function NotePage(){
             setNoteId(res.data)
             setEditMode(true)
         }
-        if (path !== "create"){
+        if (noteId !== "create"){
             getNote()
         }
-        else {
+        else if (noteId==="create") {
             createNote()
         }
-    }, [path])
+    }, [])
 
     const handleSave = async() => {
         try {
