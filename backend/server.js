@@ -46,6 +46,9 @@ async function postNote(title, content, author, noteId) {
 }
 
 async function getNote(noteId) {
+    if (noteId=="create") {
+        return null
+    }
     let note = await dataBase.collection("notes").find({"_id":new ObjectId(noteId)}).toArray()
     if (note.length===0) {
         return null
