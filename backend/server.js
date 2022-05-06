@@ -54,7 +54,6 @@ app.get('/api/ping', (req, res, next)=>{
     next()
 })
 
-
 app.post('/api/login', async (req, res, next)=>{
     // curl -X POST -H "Content-Type: application/json" -d '{"email":"123@gmail.com", "password":"123"}' http://localhost:3000/login
     // db.user.find({"email":"jiaqi@usc.edu"})
@@ -75,8 +74,19 @@ app.post('/api/login', async (req, res, next)=>{
             res.end()
         }
         else {
+            /*
+            const user = {
+                id: existUser._id.toString(),
+                name: existUser.userName,
+                email: existUser.email
+            }
+            console.log(user)
             res.writeHead(200)
-            res.write(existUser._id.toString())
+            res.write(JSON.stringify(user))
+            res.end()
+            */
+            res.writeHead(200)
+            res.write(JSON.stringify(existUser._id.toString()))
             res.end()
         }
         next()
@@ -97,10 +107,19 @@ app.post('/api/register', (req, res, next)=>{
                 res.end()
             }
             else {
-                Uid = Uid.toString()
+                /*
+                const user = {
+                    id: Uid.toString(),
+                    name: req.body.username,
+                    email: req.body.email
+                }
                 res.writeHead(200)
-                res.write(Uid)
-                res.end()                
+                res.write(JSON.stringify(user))
+                res.end()
+                */
+                res.writeHead(200)
+                res.write(Uid.toString())
+                res.end()           
             }
             next()             
         })
@@ -140,7 +159,7 @@ app.get("/api/note/:noteId", async (req, res, next)=>{
         next()
     } catch(err) {
         throw err
-    }  
+    }
 })
 
 // curl -X POST "http://localhost:8000/api/note/62739b3b44a5a324f4f68f6f"
