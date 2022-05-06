@@ -26,10 +26,10 @@ export default function TopBar({user, setUser}) {
                     <Link to="/register">Register</Link>
                 </button>
                 <button className="rLoginButton">
-                <Link to="/login">Login</Link>                
+                <Link to="/login">Login</Link>
                 </button>  
                 </>
-            }                       
+            }
         </ul>        
         </div>
     )

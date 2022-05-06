@@ -36,7 +36,7 @@ export default function NotePage(){
             setNoteId(res.data)
             setEditMode(true)
         }
-        if (path!="create"){
+        if (path !== "create"){
             getNote()
         }
         else {

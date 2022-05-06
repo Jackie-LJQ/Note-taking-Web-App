@@ -110,6 +110,18 @@ app.post('/api/register', (req, res, next)=>{
     }
 })
 
+app.get("/api/notes", async (req, res, next) => {
+    try {
+        let notes = await dataBase.collection("notes").find({}).toArray()
+        notes = JSON.stringify(notes);
+        res.writeHead(200);
+        res.write(notes);
+        res.end();
+    } catch (err) {
+        throw err;
+    }
+})
+
 app.get("/api/note/:noteId", async (req, res, next)=>{
     try {
         const noteId = req.params.noteId
