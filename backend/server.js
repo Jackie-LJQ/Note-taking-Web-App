@@ -121,7 +121,7 @@ app.post('/api/register', (req, res, next)=>{
 
 app.get("/api/notes/:userId", async (req, res, next) => {
     try {
-        let notes = await dataBase.collection("notes").find({"author": userId}).toArray()
+        let notes = await dataBase.collection("notes").find({"author": req.params.userId}).toArray()
         notes = JSON.stringify(notes);
         res.writeHead(200);
         res.write(notes);
