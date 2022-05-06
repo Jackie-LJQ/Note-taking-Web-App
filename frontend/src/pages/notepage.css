@@ -43,15 +43,18 @@
     font-size: 50px;
     margin-top: 50px;
     margin-bottom: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
     border: none;
     outline: none;
-    width: 100%;
+    width: 90%;
 }
 
 .contentInput{
     font-size: 20px;
     border: none;
     outline: none;
-    margin: 10px;
-    width: 100%
+    margin-left: 50px;
+    margin-right: 50px;
+    width: 90%
 }

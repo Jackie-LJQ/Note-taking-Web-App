@@ -31,6 +31,7 @@ export default function Home({ user }) {
   return (
     <>
       <Header user={user} />
+      <div className="buttonWrapper">
       {user ? (
         <button className="createNewNoteButton" onClick={createNewNote}>
           Create New Note
@@ -38,6 +39,8 @@ export default function Home({ user }) {
       ) : (
         <></>
       )}
+      </div>
+      
       <div className="ownedTitle">Your notes</div>
       <div className="ownedNotes">
         <Notes notes={notes} />

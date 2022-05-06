@@ -72,7 +72,7 @@ export default function NotePage(){
     }
     return (
         <div className="notepage">    
-            <div className="editDate">Last Edit at: {timeStamp}</div>
+            <div className="editDate">Last Edit at: {new Date(timeStamp).toLocaleString()}</div>
             <div className="pageIcon">            
                 {ownership&&!editMode ? <i className="pageIconItem fa-solid fa-square-pen" onClick={(e)=>{setEditMode(true)}}></i> : <></>}
                 {editMode ? <i className="pageIconItem fa-solid fa-floppy-disk" onClick={handleSave}></i> : <></>}
