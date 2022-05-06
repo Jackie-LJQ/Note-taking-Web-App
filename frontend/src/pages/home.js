@@ -10,7 +10,7 @@ export default function Home({user}){
 
     useEffect(() => {
         const fetchNotes = async () => {
-            const res = await axios.get('/api/notes');
+            const res = await axios.get(`/api/notes/${user}`);
             setNotes(res.data);
         };
         fetchNotes();
