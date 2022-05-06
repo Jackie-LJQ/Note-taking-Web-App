@@ -33,6 +33,7 @@ export default function NotePage(){
             newDate = newDate.toString()
             setTimeStamp(newDate)
             setOwnership(true)
+            console.log(res.data)
             setNoteId(res.data)
             setEditMode(true)
         }
@@ -42,7 +43,7 @@ export default function NotePage(){
         else if (noteId==="create") {
             createNote()
         }
-    })
+    },[noteId])
 
     const handleSave = async() => {
         try {

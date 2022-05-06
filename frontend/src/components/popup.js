@@ -12,13 +12,14 @@ export default function PopUp({open, onClose}) {
     const noteId = location.pathname.split("/")[2]
     const handleInvite = async()=>{
         let res = await axios.post("/api/invite/" + noteId, {
-            guest:guestEmail
+            guestEmail
         })
+        console.log(res)
         if (res.status===202) {
             setErrMessage(res.data)
         }
-        else {
-            setShared(res.data.group)
+        else {            
+            setShared(res.data)
         }
     }
     useEffect(()=>{

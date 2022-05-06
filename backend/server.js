@@ -25,7 +25,7 @@ async function registerUser(params) {
         return [`${email} has registered. Please use login!`, null]
     }
     
-    let res = await dataBase.collection("user").insertOne({'email':email, 'userName':userName, "password":passWord})
+    let res = await dataBase.collection("user").insertOne({'email':email, 'userName':userName, "password":passWord, "sharedPage":[]})
     let Uid = await res.insertedId.toString();
     return [null, Uid]
 }
@@ -34,16 +34,14 @@ async function postNote(title, content, author, noteId) {
     let newNoteId
     if (noteId) {
         //update note: update note doesn't change the author
-        await dataBase.collection("notes").updateOne({"_id":new ObjectId(noteId)}, {$set:{"title":title, "content":content}})
+        await dataBase.collection("notes").updateOne({"_id":new ObjectId(noteId)}, {$set:{"title":title, "content":content, "timeStamp":new Date()}})
         newNoteId = noteId
     }
     else {
         //create note: share group only contains author when create a new note
-        let res = await dataBase.collection("notes").insertOne({"title":title, "content":content, "author":author, "group":[]})
+        let res = await dataBase.collection("notes").insertOne({"title":title, "content":content, "author":author, "group":[], "timeStamp":new Date()})
         newNoteId = await res.insertedId.toString()
-        
     }
-    await dataBase.collection("notes").updateOne({"_id":new ObjectId(newNoteId)}, {$set:{"timeStamp":new Date()}})
     return newNoteId
 }
 
@@ -61,6 +59,45 @@ async function getUserByEmail(email) {
         return null
     }
     return user[0]
+}
+
+async function shareNote(noteId, guestEmail) {
+    let note = await getNote(noteId)
+    let errMessage = null
+    let sharedUser = null
+    if (!note) {
+        errMessage = "Note does not exist"
+        return [errMessage, null]
+    }
+    if (note.group.length===5) {
+        errMessage = "Share number exceeds maximum of 5."
+        return [errMessage, null]
+    }
+    if (note.group.includes(guestEmail)) {
+        errMessage = "Guest has been invited."
+        return [errMessage, null]
+    }
+    let guest = await getUserByEmail(guestEmail)
+    if (!guest) {
+        errMessage = "Guest does not exist."
+        return [errMessage, null]
+    }
+    
+    let guestName = guest.userName
+    let newGuestGroup = note.group
+    newGuestGroup.push(guestName)
+    let updateNote = await dataBase.collection("notes").updateOne({"_id":new ObjectId(noteId)}, {$set:{"group":newGuestGroup}})
+    let guestId = guest._id
+    let sharedPage = guest.sharedPage
+    sharedPage.push(noteId)
+    console.log(guestId)
+    let updateGuest = await dataBase.collection("user").updateOne({"_id":new ObjectId(guestId)}, {$set:{"sharedPage":newSharedPage}})
+    if (updateNote.modifiedCount===1 && updateGuest.modifiedCount===1) {
+        sharedUser = newGroup.toString()
+        return [null, sharedUser]
+    }
+    errMessage = "Something went wrong. Please try again."
+    return [errMessage, null]
 }
 
 app.get('/api/ping', (req, res, next)=>{
@@ -94,7 +131,6 @@ app.post('/api/login', async (req, res, next)=>{
                 name: existUser.userName,
                 email: existUser.email
             }
-            console.log(user)
             res.writeHead(200)
             res.write(JSON.stringify(user))
             res.end()
@@ -148,8 +184,7 @@ app.get("/api/notes/:userId", async (req, res, next) => {
 
 app.get("/api/note/:noteId", async (req, res, next)=>{
     try {
-        const noteId = req.params.noteId
-        let note = await getNote(noteId)
+        let note = await getNote(req.params.noteId)
         if (!note) {
             res.writeHead(202)
             res.write("Note doesn't exist.")
@@ -214,49 +249,17 @@ app.delete("/api/note/:noteId", async(req, res, next)=>{
 
 app.post("/api/invite/:noteId", async (req, res, next)=>{
     try {
-        let noteId = req.params.noteId
-        let note = await getNote(noteId)
-        if (!note) {
-            res.writeHead(202)
-            res.write("Note does not exist")
+        let [errMessage, sharedUser] = await shareNote(req.params.noteId, req.body.guestEmail)
+        if (errMessage) {
+            res.writeHead(202)    
+            res.write("Something unknown happened, please try again.")
             res.end()
             return next()
         }
-        if (note.group.length===5) {
-            res.writeHead(202)
-            res.write("Share number exceeds maximum of 5.")
-            res.end()
-            return next()
-        }
-        let guestEmail = req.body.guest
-        let guest = await getUserByEmail(guestEmail)
-        if (!guest) {
-            res.writeHead(202)
-            res.write("Guest does not exist.")
-            res.end()
-            return next()
-        }
-        if (note.group.includes(guestEmail)) {
-            res.writeHead(202)
-            res.write("Guest has been invited.")
-            res.end()
-            return next()
-        }
-
-        let newGroup = note.group
-        newGroup.push(guestEmail)
-        let updateRes = await dataBase.collection("notes").updateOne({"_id":new ObjectId(noteId)}, {$set:{"group":newGroup}})
-        // console.log(newGroup.toString())
-        if (updateRes.modifiedCount===1) {
-            res.writeHead(200)
-            res.write(newGroup.toString())
-            res.end()
-            next()
-        }
-        res.writeHead(202)    
-        res.write("Something unknown happened, please try again.")
+        res.writeHead(200)
+        res.write(sharedUser)
         res.end()
-        next()
+        return next()        
     }catch(err){
         throw(err)
     }
