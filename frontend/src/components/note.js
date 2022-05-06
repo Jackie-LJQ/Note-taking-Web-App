@@ -5,9 +5,6 @@ export default function note({note}) {
   return (
     <div className="note">
         <div className="noteInfo">
-            <div className="noteTags">
-                <span className="noteTag">General</span>
-            </div>
             <div className="noteTitleBold">
             <Link to={`/note/${note._id}`}>
             <span className="noteTitleBold">{note.title}</span>
