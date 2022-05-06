@@ -9,7 +9,7 @@ export default function Home({user}){
 
     useEffect(() => {
         const fetchNotes = async () => {
-            const res = await axios.get('/api/notes');
+            const res = await axios.get(`/api/notes/${user}`);
             setNotes(res.data);
         };
         fetchNotes();
@@ -23,9 +23,11 @@ export default function Home({user}){
         <>
             <Header user={user} />
             {user ? <button className="createNewNoteButton" onClick={createNewNote}>Create New Note</button> : <></>}
-            <div className="home">
+            <div className="ownedTitle">Your notes</div>
+            <div className="ownedNotes">
                 <Notes notes={notes} />
             </div>
+            <div className="sharedTitle">Notes shared with you</div>
         </>
     )
 }

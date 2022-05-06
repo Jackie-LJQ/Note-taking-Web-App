@@ -35,7 +35,9 @@ export default function Register() {
                 setErrMessage(res.data)
             }
             else if (res.data){
-                localStorage.setItem("user", res.data)
+                localStorage.setItem("user", res.data.id)
+                localStorage.setItem("name", res.data.name)
+                localStorage.setItem("email", res.data.email)
                 window.location.replace("/home")
             }
             else {                

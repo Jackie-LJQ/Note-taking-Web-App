@@ -1,13 +1,39 @@
-.home{
+.ownedTitle{
+    margin-top: 20px;
+    margin-left: 45px;
+    font-size: 25px;
+    font-weight: 350;
+}
+
+.ownedNotes{
+    display: flex;
+}
+
+.sharedTitle{
+    margin-top: 0px;
+    margin-left: 45px;
+    font-size: 25px;
+    font-weight: 350;
+}
+
+.sharedNotes{
     display: flex;
 }
 
 .createNewNoteButton{
-    margin-left: 100px;
+    margin-left: 45px;
     margin-top: 20px;
-    font-size: 10px;
-    color: rgb(236, 232, 232);
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: white;
     border: none;
-    background-color: #88b7df;
-    border-radius: 10px;
+    background-color: #2ba54a;
+    border-radius: 5px;
+    /*
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    */
+    padding: 10px;
 }

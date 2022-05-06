@@ -11,7 +11,7 @@ export default function PopUp({open, onClose}) {
     let location = useLocation()
     const noteId = location.pathname.split("/")[2]
     const handleInvite = async()=>{
-        let res = await axios.post("/api/invite/" + guestEmail, {
+        let res = await axios.post("/api/invite/" + noteId, {
             guest:guestEmail
         })
         if (res.status===202) {
@@ -24,7 +24,6 @@ export default function PopUp({open, onClose}) {
     useEffect(()=>{
         const getShared = async ()=>{
             let res = await axios.get("/api/note/"+noteId)
-            console.log(res)
             setShared(res.data.group)
         }
         getShared()
