@@ -1,0 +1,61 @@
+.note{
+    width: 385px;
+    margin: 0px 25px 40px 25px;
+}
+
+.noteImg{
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 7px;
+}
+
+.noteInfo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.noteTag{
+    font-size: 11px;
+    color: #be9656;
+    line-height: 20px;
+    margin-top: 15px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.noteTitle{
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+.noteGroup{
+    font-size: 11px;
+    color: #be9656;
+    line-height: 20px;
+    margin-top: 15px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.noteDate{
+    font-style: italic;
+    font-size: 13px;
+    color: grey;
+    margin-top: 15px;
+}
+
+.noteAbs{
+    font-size: 14px;
+    color: #444;
+    line-height: 24px;
+    margin-top: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
