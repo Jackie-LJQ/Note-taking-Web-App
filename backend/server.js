@@ -76,7 +76,7 @@ app.post('/api/login', async (req, res, next)=>{
     try {
         let email = req.body.email
         let passWord = req.body.password
-        let existUser = getUserByEmail(email)
+        let existUser = await getUserByEmail(email)
         if (!existUser) {
             res.writeHead(406)
             res.write("Account doesn't exists. Please register.")
