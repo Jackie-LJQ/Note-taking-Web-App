@@ -39,7 +39,7 @@ async function postNote(title, content, author, noteId) {
     }
     else {
         //create note: share group only contains author when create a new note
-        let res = await dataBase.collection("notes").insertOne({"title":title, "content":content, "author":author, "group":[author]})
+        let res = await dataBase.collection("notes").insertOne({"title":title, "content":content, "author":author, "group":[]})
         newNoteId = await res.insertedId.toString()
         
     }

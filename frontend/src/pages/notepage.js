@@ -1,16 +1,18 @@
 import "./notepage.css"
+import PopUp from "../components/popup"
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 
 export default function NotePage(){
-    const location = useLocation();
+    const location = useLocation()
     let [editMode, setEditMode] = useState(false)
     let [title, setTitle] = useState("")
     let [content, setContent]  = useState("")
     let [timeStamp, setTimeStamp] = useState("")
     let [ownership, setOwnership] = useState(false)
     let [noteId, setNoteId] = useState(location.pathname.split("/")[2])
+    const [isOpen, setOpen] = useState(false)
     
     useEffect(()=>{
         const getNote = async ()=>{
@@ -40,7 +42,7 @@ export default function NotePage(){
         else if (noteId==="create") {
             createNote()
         }
-    }, [])
+    })
 
     const handleSave = async() => {
         try {
@@ -74,7 +76,13 @@ export default function NotePage(){
                 {ownership&&!editMode ? <i className="pageIconItem fa-solid fa-square-pen" onClick={(e)=>{setEditMode(true)}}></i> : <></>}
                 {editMode ? <i className="pageIconItem fa-solid fa-floppy-disk" onClick={handleSave}></i> : <></>}
                 {ownership ? <i className="pageIconItem fa-solid fa-trash-can" onClick={handleDelete}></i> : <></>}
-                {ownership ? <i className="pageIconItem fa-solid fa-share-nodes"></i> : <></>}
+                {ownership ? 
+                <>
+                    <i className="pageIconItem fa-solid fa-share-nodes" onClick={()=>{setOpen(true)}}></i> 
+                    <PopUp className="popUp" open={isOpen} onClose={()=>{setOpen(false)}}>Fancy popUp</PopUp>
+                    {/* <p className="popUp">cbadioni</p> */}
+                </>
+                : <></>}
             </div>
             {
                 editMode ? (
