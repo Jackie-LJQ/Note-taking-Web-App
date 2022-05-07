@@ -40,7 +40,7 @@ export default function Login() {
                 <form className="loginForm">            
                     <div className="loginBlock">
                         <label className="loginLabel">Account</label>
-                        <input 
+                        <input className="loginInput"
                             type="text" 
                             placeholder="Enter your email address"
                             onChange={(e)=>{setEmail(e.target.value)}}
@@ -48,14 +48,14 @@ export default function Login() {
                     </div>
                     <div className="loginBlock">
                         <label className="loginLabel">Password</label>
-                        <input 
+                        <input className="loginInput"
                             type="password" 
                             placeholder="Enter your password" 
                             onChange={(e)=>{setPassword(e.target.value)}}
                         />
                     </div>
                     <div className="errorBlock">{errMessage}</div>
-                    <button type="submit" className="loginButton" onClick={handleSubmit}>Login</button>
+                    <button type="submit" className="loginSubmitButton" onClick={handleSubmit}>Login</button>
                 </form>
             </div>
         </>
