@@ -18,14 +18,14 @@ export default function TopBar({user, setUser}) {
             </li>  
             {
                 user ? 
-                <button className="lRegisterButton" onClick={handleLogout}>
+                <button className="logoutButton" onClick={handleLogout}>
                     <Link to="/tutorial">{user && "Logout" }</Link>
                 </button>  :
                 <>
-                <button className="lRegisterButton">
+                <button className="registerButton">
                     <Link to="/register">Register</Link>
                 </button>
-                <button className="rLoginButton">
+                <button className="loginButton">
                 <Link to="/login">Login</Link>
                 </button>  
                 </>

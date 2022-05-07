@@ -55,7 +55,7 @@ export default function Register() {
                 <form className="registerForm">    
                     <div className="registerBlock">
                         <label className="registerLabel">User Name</label>
-                        <input 
+                        <input className="registerInput"
                             type="text" 
                             placeholder="Enter your User Name"
                             onChange={(e)=>{setUsername(e.target.value)}}
@@ -63,7 +63,7 @@ export default function Register() {
                     </div>        
                     <div className="registerBlock">
                         <label className="registerLabel">Email Address</label>
-                        <input 
+                        <input className="registerInput"
                             type="text" 
                             placeholder="Enter your email address"
                             onChange={(e)=>{setEmail(e.target.value)}}
@@ -71,7 +71,7 @@ export default function Register() {
                     </div>                    
                     <div className="registerBlock">
                         <label className="registerLabel">Password</label>
-                        <input 
+                        <input className="registerInput"
                             type="password" 
                             placeholder="Enter your password" 
                             onChange={(e)=>setPassword(e.target.value)}
@@ -80,9 +80,9 @@ export default function Register() {
                     <div className="errorBlock">{errMessage}</div>
                     <button 
                         type="submit" 
-                        className="registerButton" 
+                        className="registerSubmitButton" 
                         onClick={handleSubmit}>Register</button>
-                </form>            
+                </form>
             </div>
         </>
     )
