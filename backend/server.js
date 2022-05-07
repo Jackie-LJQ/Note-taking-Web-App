@@ -275,6 +275,13 @@ app.get("/api/notes/:userId", async (req, res, next) => {
       .collection("notes")
       .find({ author: req.params.userId })
       .toArray();
+    for (let _note of notes) {
+      let newNoteGroup = [];
+      for (let _noteGroupItem of _note.group) {
+        newNoteGroup.push(_noteGroupItem.userName);
+      }
+      _note.group = newNoteGroup;
+    }
     notes = JSON.stringify(notes);
     res.writeHead(200);
     res.write(notes);
@@ -293,8 +300,13 @@ app.get("/api/notes/:userId/shared", async (req, res, next) => {
     let notes = [];
     if (!!sharedIds) {
       for (const id of sharedIds) {
-        const note = await getNote(id);
-        notes.push(note);
+        const _note = await getNote(id);
+        let newNoteGroup = [];
+        for (let _noteGroupItem of _note.group) {
+            newNoteGroup.push(_noteGroupItem.userName);
+          }
+          _note.group = newNoteGroup;
+        notes.push(_note);
       }
     }
     notes = JSON.stringify(notes);
