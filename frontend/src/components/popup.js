@@ -2,6 +2,7 @@ import {React, useState, useEffect} from 'react'
 import "./popup.css"
 import axios from "axios"
 import { useLocation } from 'react-router-dom'
+import {createPortal} from 'react-dom'
   
 
 export default function PopUp({open, onClose}) {
@@ -15,7 +16,6 @@ export default function PopUp({open, onClose}) {
         let res = await axios.post("/api/invite/" + noteId, {
             guestEmail
         })
-        console.log(res)
         if (res.status===202) {
             setErrMessage(res.data)
         }
@@ -42,21 +42,32 @@ export default function PopUp({open, onClose}) {
         getShared()
     },[noteId])
 
+    useEffect(()=>{
+        setErrMessage(null)
+    },[open])
+
 
     if (!open) {
         return null
     }    
-    return (
-        <>
+    return createPortal(
+        <>  
+            <div className='overlay'></div>
             <div className='popUp'>
-                <input className='guestEmail' onChange={(e)=>{setGuestEmail(e.target.value)}}/>
-                <button onClick={handleInvite}>Invite</button>
-                <input className='guestEmail' onChange={(e)=>{setDelGuest(e.target.value)}}/>
-                <button onClick={handleDelete}>Delete</button>
-                <div>{errMessage}</div>
-                <div>Shared with: {shared}</div>
-                <button className='closeButton' onClick={onClose}>x</button>
+                
+                <div className='popupItem'>
+                <input className='guestEmail' placeholder='Enter guest email...' onChange={(e)=>{setGuestEmail(e.target.value)}}/>
+                <button className='guestButton invite' onClick={handleInvite}>Invite</button>
+                </div>
+                <div  className='popupItem'>
+                <input className='guestEmail'placeholder='Enter guest email...' onChange={(e)=>{setDelGuest(e.target.value)}}/>
+                <button className='guestButton delete' onClick={handleDelete}>Delete</button>
+                </div>
+                <div className='errorMessage'>{errMessage}</div>
+                <div className='curGuests'>Current Guests: {shared}</div>
+                <i className="closeButton fa-solid fa-circle-xmark" onClick={onClose}></i>
             </div>
-        </>
+        </>,
+        document.getElementById("popUp")
     )
 }

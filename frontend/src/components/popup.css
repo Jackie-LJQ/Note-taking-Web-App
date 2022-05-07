@@ -1,14 +1,67 @@
 .popUp{
-    position: 'fixed';
-    top:0;
-    bottom:0;
-    left: 0;
-    right: 0;
-    background-color: rgb(207, 196, 196);
-    padding: 50px;
-    z-Index: 1000
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 200px;
+    background-color: white;
+    border: 1px;
+    border-style: solid;
+    /* padding: 50px; */
+    z-Index: 5;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .closeButton{
+      color: rgb(44, 44, 44);
+      font-size: 20px;
+      position:fixed;
+      top:0px;
+      right: 0px;
+      margin: 5px;
+  }
+
+  .guestEmail{
+      max-width: 150px;
+      /* border: 1px; */
+      border-style:hidden;
+      outline: 1px;
+      outline-style: solid;
+      
+  }
+
+  .guestButton{
+      min-width: 55px;
+      margin-left: 10px;
+  }
+
+  .invite{
+      color: rgb(3, 145, 3);
+  }
+
+  .delete{
       color: red;
+  }
+
+  .errorMessage{
+      color: red;
+  }
+
+  .curGuests{
+      margin-top: 10px;
+  }
+
+  .overlay{
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      z-index: 4;
+      background-color: rgba(0, 0, 0, .7);
   }
