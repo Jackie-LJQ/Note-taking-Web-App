@@ -7,7 +7,8 @@ import { useLocation } from 'react-router-dom'
 export default function PopUp({open, onClose}) {
     const [guestEmail, setGuestEmail] = useState()
     const [errMessage, setErrMessage] = useState()
-    const [shared, setShared] = useState("user a")
+    const [shared, setShared] = useState()
+    const [delGuest, setDelGuest] = useState()
     let location = useLocation()
     const noteId = location.pathname.split("/")[2]
     const handleInvite = async()=>{
@@ -22,10 +23,21 @@ export default function PopUp({open, onClose}) {
             setShared(res.data)
         }
     }
+    const handleDelete = async()=>{
+        let res = await axios.post("/api/deleteGuest/"+noteId, {
+            delGuest:delGuest
+        })
+        if (res.status===202) {
+            setErrMessage(res.data)
+        }
+        else {            
+            setShared(res.data)
+        }
+    }
     useEffect(()=>{
         const getShared = async ()=>{
-            let res = await axios.get("/api/note/"+noteId)
-            setShared(res.data.group)
+            let res = await axios.get("/api/noteGuest/"+noteId)
+            setShared(res.data)
         }
         getShared()
     },[noteId])
@@ -37,11 +49,12 @@ export default function PopUp({open, onClose}) {
     return (
         <>
             <div className='popUp'>
-                <label>share with</label>
                 <input className='guestEmail' onChange={(e)=>{setGuestEmail(e.target.value)}}/>
-                <button onClick={handleInvite}>invite</button>
+                <button onClick={handleInvite}>Invite</button>
+                <input className='guestEmail' onChange={(e)=>{setDelGuest(e.target.value)}}/>
+                <button onClick={handleDelete}>Delete</button>
                 <div>{errMessage}</div>
-                <div>Shared with {shared}</div>
+                <div>Shared with: {shared}</div>
                 <button className='closeButton' onClick={onClose}>x</button>
             </div>
         </>

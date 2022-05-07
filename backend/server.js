@@ -1,3 +1,4 @@
+const { ObjectID } = require("bson");
 const express = require("express");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -110,9 +111,18 @@ async function shareNote(noteId, guestEmail) {
     errMessage = "Guest has already been invited.";
     return [errMessage, null];
   }
+  if (note.author === guest._id.toString()) {
+    errMessage = "Can't invite yourself.";
+    return [errMessage, null];
+  }
 
   if (!!!note.group) note.group = [];
-  note.group.push(guest._id.toString());
+  let guestInfo = {
+      "_id" : guest._id.toString(),
+      "email" : guest.email,
+      "userName" : guest.userName
+    }
+  note.group.push(guestInfo);
   if (!!!guest.sharedPage) guest.sharedPage = [];
   guest.sharedPage.push(noteId);
   let updateNote = await dataBase
@@ -122,11 +132,72 @@ async function shareNote(noteId, guestEmail) {
     .collection("user")
     .updateOne({ _id: guest._id }, { $set: { sharedPage: guest.sharedPage } });
   if (updateNote.modifiedCount === 1 && updateGuest.modifiedCount === 1) {
-    sharedUser = note.group.toString();
+    sharedUser = "";
+    for (guest of note.group) {
+      sharedUser += guest.userName + ", ";
+    }
     return [null, sharedUser];
   }
   errMessage = "Something went wrong. Please try again.";
   return [errMessage, null];
+}
+
+async function getUserNameById(userId) {
+  let user = await dataBase
+    .collection("user")
+    .find({"_id" : new Object(userId)})
+    .toArray();
+    if (userName.length===0) {
+      return null;
+    }
+    return user.userName;
+}
+
+async function deleteGuest(noteId, delGuestEmail) {
+  let note = await getNote(noteId);
+  let newGuests = [];
+  let delGuestId = null;
+  let newGuestNames = "";
+  for (let guestItem of note.group) {
+      if (guestItem.email === delGuestEmail) {
+        delGuestId = guestItem._id;
+        continue;
+      }
+      newGuests.push(guestItem);
+      newGuestNames += guestItem.userName + ", ";
+  }
+  let errMessage;
+  let newGuest;
+  if (newGuests.length === note.group.length) {
+    errMessage = "Email haven't been invited."
+    return [errMessage, null];
+  }
+  let guest = await dataBase
+                    .collection("user")
+                    .find({"_id":new ObjectID(delGuestId)}).toArray();
+  if (guest.length===0) {
+    errMessage = "Guest doesn't exist."
+    return [errMessage, null];
+  }
+  guest = guest[0];
+  // console.log(guest);
+  let guestSharedPage = guest.sharedPage
+  let newSharedPage = guestSharedPage.filter((item)=>{
+    return item !== noteId;
+  })
+  let delGuestRes = await dataBase
+                      .collection("notes")
+                      .updateOne({"_id": new ObjectID(noteId)},
+                        {$set:{"group":newGuests}});
+  let delSPageRes = await dataBase
+                      .collection("user")
+                      .updateOne({"_id": new ObjectID(delGuestId)}, 
+                        {$set:{"sharedPage":newSharedPage}});
+  if (delSPageRes.modifiedCount === 1 && delGuestRes.modifiedCount===1){
+    return [null, newGuestNames];
+  }
+  return ["Something unknown happens. Please try again.", null];
+
 }
 
 app.get("/api/ping", (req, res, next) => {
@@ -135,6 +206,8 @@ app.get("/api/ping", (req, res, next) => {
   res.end();
   next();
 });
+
+
 
 app.post("/api/login", async (req, res, next) => {
   // curl -X POST -H "Content-Type: application/json" -d '{"email":"123@gmail.com", "password":"123"}' http://localhost:3000/login
@@ -314,6 +387,51 @@ app.post("/api/invite/:noteId", async (req, res, next) => {
     res.write(sharedUser);
     res.end();
     return next();
+  } catch (err) {
+    throw err;
+  }
+});
+
+
+app.get("/api/noteGuest/:noteId", async (req, res, next) => {
+  try {
+    let note = await getNote(req.params.noteId);
+    let guestsName = []
+    for (let guestInfo of note.group) {
+      guestsName.push(guestInfo.userName);
+    }
+    if (!note) {
+      res.writeHead(202);
+      res.write("Note doesn't exist.");
+      res.end();
+    } else {
+      note = JSON.stringify(note);
+      res.writeHead(200);
+      res.write(guestsName.toString());
+      res.end();
+    }
+    next();
+  } catch (err) {
+    throw err;
+  }
+});
+
+app.post("/api/deleteGuest/:noteId", async (req, res, next) => {
+  try {
+    let noteId = req.params.noteId;
+    let delGuestEmail = req.body.delGuest;
+    let [errMessage, newGuest] = await deleteGuest(noteId, delGuestEmail);
+    if (errMessage) {
+      res.writeHead(202);
+      res.write(errMessage);
+      res.end();
+      return next()
+    } else {
+      res.writeHead(200);
+      res.write(newGuest);
+      res.end();
+      return next()
+    }
   } catch (err) {
     throw err;
   }
