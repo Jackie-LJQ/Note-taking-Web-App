@@ -5,11 +5,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 var uri = "mongodb://localhost:27017";
 const PORT = 8000;
-// console.log(uri)
+
 const { MongoClient, ObjectId, ConnectionClosedEvent } = require("mongodb");
 MongoClient.connect(uri, (err, mongoConnect) => {
   if (err) {
-    // console.log(err)
     process.exit(5);
   }
   dataBase = mongoConnect.db("notesWebApp");
@@ -234,6 +233,35 @@ async function deleteGuest(noteId, delGuestEmail) {
 
 }
 
+async function addTodoItem(userId, content, isCompleted) {
+  let res = await dataBase
+      .collection("todoLists")
+      .insertOne({
+        userId: userId,
+        content: content,
+        isCompleted: isCompleted
+      })
+      let Tid = await res.insertedId.toString();
+      return Tid.toString();
+}
+async function updateTodoItem(_Tid, isCompleted) {
+  let updateTodo = await dataBase
+      .collection("todoLists")
+      .updateOne({_id : new ObjectID(_Tid)}, 
+      {$set:{isCompleted : isCompleted}})
+  if (updateTodo.modifiedCount !== 1) {
+    throw new Error("Updata Todo List Failed")
+  }
+}
+
+async function getTodoList(userId){
+  let todoList = await dataBase
+      .collection("todoLists")
+      .find({"userId":userId})
+      .toArray()
+  return todoList;
+}
+
 app.get("/api/ping", (req, res, next) => {
   res.writeHead(200);
   res.write("Hello from server!\n");
@@ -383,7 +411,7 @@ app.post("/api/note/:noteId", async (req, res, next) => {
     res.end();
     next();
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 });
 
@@ -397,7 +425,7 @@ app.post("/api/createNew", async (req, res, next) => {
     res.end();
     next();
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 });
 
@@ -485,3 +513,47 @@ app.post("/api/deleteGuest/:noteId", async (req, res, next) => {
     throw err;
   }
 });
+
+//add a new todo item
+app.post("/api/todoList/:userId/create", async (req, res, next)=>{
+  try {
+    let content = req.body.content;
+    let isCompleted = req.body.isComplete;
+    let userId = req.params.userId;
+    let Tid = await addTodoItem(userId, content, isCompleted);
+    res.writeHead(200);
+    res.write(Tid)
+    res.end();
+    next();
+  } catch(err) {
+    throw err
+  }
+})
+
+app.post("/api/todoList/:todoItemId/update", async(req, res, next)=>{
+  try {
+    let _Tid = req.params.todoItemId;
+    let isCompleted = req.body.isCompleted;
+    await updateTodoItem(_Tid, isCompleted);
+    let todoLists = await getTodoList(req.body.userId);
+    res.writeHead(200);
+    res.write(JSON.stringify(todoLists));
+    res.end();
+    next();
+  } catch(err) {
+    throw err
+  }
+})
+
+app.get("/api/todoList/:userId", async(req, res, next)=>{
+  try {
+    let userId = req.params.userId;
+    let todoLists = await getTodoList(userId);
+    res.writeHead(200);
+    res.write(JSON.stringify(todoLists));
+    res.end()
+    next();
+  } catch(err) {
+    throw err;
+  }
+})
