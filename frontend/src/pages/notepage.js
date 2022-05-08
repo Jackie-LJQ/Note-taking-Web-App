@@ -55,8 +55,8 @@ export default function NotePage(){
     const handleSave = async() => {
         try {
             axios.post("/api/note/"+noteId, {
-                title:title,
-                content:content            
+                title:title || "No Title",
+                content:content || "No content"           
             })
             window.location.replace("/note/"+noteId)
         }catch(err) {
