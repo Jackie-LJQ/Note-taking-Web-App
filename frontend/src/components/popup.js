@@ -12,9 +12,10 @@ export default function PopUp({open, onClose}) {
     const [delGuest, setDelGuest] = useState()
     let location = useLocation()
     const noteId = location.pathname.split("/")[2]
-    const handleInvite = async()=>{
-        let res = await axios.post("/api/invite/" + noteId, {
-            guestEmail
+    const handleInvite = async(mode)=>{
+        let res = await axios.post(`/api/invite/${noteId}`, {
+            guestEmail,
+            mode
         })
         if (res.status===202) {
             setErrMessage(res.data)
@@ -40,7 +41,7 @@ export default function PopUp({open, onClose}) {
             setShared(res.data)
         }
         getShared()
-    },[noteId])
+    },[open])
 
     useEffect(()=>{
         setErrMessage(null)
@@ -54,18 +55,33 @@ export default function PopUp({open, onClose}) {
         <>  
             <div className='overlay'></div>
             <div className='popUp'>
-                
-                <div className='popupItem'>
-                <input className='guestEmail' placeholder='Enter guest email...' onChange={(e)=>{setGuestEmail(e.target.value)}}/>
-                <button className='guestButton invite' onClick={handleInvite}>Invite</button>
-                </div>
-                <div  className='popupItem'>
-                <input className='guestEmail'placeholder='Enter guest email...' onChange={(e)=>{setDelGuest(e.target.value)}}/>
-                <button className='guestButton delete' onClick={handleDelete}>Delete</button>
-                </div>
-                <div className='errorMessage'>{errMessage}</div>
-                <div className='curGuests'>Current Guests: {shared}</div>
-                <i className="closeButton fa-solid fa-circle-xmark" onClick={onClose}></i>
+                <div className='popupItems'>
+                    <div className='popupItem'>
+                    <input className='guestEmail' placeholder='Enter guest email...' onChange={(e)=>{setGuestEmail(e.target.value)}}/>
+                    <button className='guestButton invite' onClick={()=>handleInvite("view")}>Invite View</button>
+                    </div>
+                    <div className='popupItem'>
+                    <input className='guestEmail' placeholder='Enter guest email...' onChange={(e)=>{setGuestEmail(e.target.value)}}/>
+                    <button className='guestButton invite' onClick={()=>handleInvite("edit")}>Invite Edit</button>
+                    </div>
+                    <div  className='popupItem'>
+                    <input className='guestEmail'placeholder='Enter guest email...' onChange={(e)=>{setDelGuest(e.target.value)}}/>
+                    <button className='guestButton delete' onClick={handleDelete}>Delete</button>
+                    </div>
+                    <div className='errorMessage'>{errMessage}</div>
+                </div >
+                <div className='curGuests'>
+                {
+                    shared ? 
+                        <>
+                        <div>Current Guests: </div>
+                        <div>{shared.split(";")[0]}</div> 
+                        <div>{shared.split(";")[1]}</div> 
+                        </>
+                : <></>
+                }
+                </div>            
+            <i className="closeButton fa-solid fa-circle-xmark" onClick={onClose}></i> 
             </div>
         </>,
         document.getElementById("popUp")

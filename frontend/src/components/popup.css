@@ -3,57 +3,66 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 300px;
-    height: 200px;
+    width: 400px;
+    height: 300px;
     background-color: white;
     border: 1px;
     border-style: solid;
-    /* padding: 50px; */
     z-Index: 5;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    /* align-items: center; */
     justify-content: center;
   }
 
+.popupItems{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
   .closeButton{
-      color: rgb(44, 44, 44);
-      font-size: 20px;
-      position:fixed;
-      top:0px;
-      right: 0px;
-      margin: 5px;
+    color: rgb(44, 44, 44);
+    font-size: 20px;
+    position:fixed;
+    top:0px;
+    right: 0px;
+    margin: 5px;
   }
 
   .guestEmail{
-      max-width: 150px;
-      /* border: 1px; */
-      border-style:hidden;
-      outline: 1px;
-      outline-style: solid;
+    max-width: 150px;
+    border: 1px;
+    border-style:hidden;
+    outline: 1px;
+    outline-style: solid;
       
   }
 
   .guestButton{
-      min-width: 55px;
-      margin-left: 10px;
+    min-width: 80px;
+    margin-left: 20px;
   }
 
   .invite{
-      color: rgb(3, 145, 3);
+    color: rgb(3, 145, 3);
   }
 
   .delete{
-      color: red;
+    color: red;
   }
 
   .errorMessage{
-      color: red;
+    color: red;
   }
 
   .curGuests{
-      margin-top: 10px;
+    color: green;
+    font-weight: bold;
+    margin-left: 70px;
   }
 
   .overlay{

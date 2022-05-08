@@ -6,7 +6,7 @@ app.use(express.json());
 var uri = "mongodb://localhost:27017";
 const PORT = 8000;
 // console.log(uri)
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient, ObjectId, ConnectionClosedEvent } = require("mongodb");
 MongoClient.connect(uri, (err, mongoConnect) => {
   if (err) {
     // console.log(err)
@@ -90,7 +90,22 @@ async function getUserByEmail(email) {
   return user[0];
 }
 
-async function shareNote(noteId, guestEmail) {
+async function updateNote(guestsInfo, noteId, sharedPageInfo, userId) {
+  let updatedNote = await dataBase
+    .collection("notes")
+    .updateOne({ _id: new ObjectId(noteId) }, { $set: { group: guestsInfo } });
+  let updatedUser = await dataBase
+    .collection("user")
+    .updateOne({ _id: new ObjectId(userId) }, { $set: { sharedPage: sharedPageInfo } });
+  if (updatedNote.modifiedCount === 1 && updatedUser.modifiedCount === 1) {
+    let sharedUser = retriveGuestNames(guestsInfo)
+    return [null, sharedUser];
+  }
+  errMessage = "Something went wrong. Please try again.";
+  return [errMessage, null];
+}
+
+async function shareNote(noteId, guestEmail, mode) {
   let note = await getNote(noteId);
   let errMessage = null;
   let sharedUser = null;
@@ -107,39 +122,70 @@ async function shareNote(noteId, guestEmail) {
     errMessage = "Guest does not exist.";
     return [errMessage, null];
   }
-  if (note.group.includes(guest._id.toString())) {
-    errMessage = "Guest has already been invited.";
-    return [errMessage, null];
-  }
   if (note.author === guest._id.toString()) {
     errMessage = "Can't invite yourself.";
     return [errMessage, null];
   }
+  for (let idx=0; idx < note.group.length; idx++) {
+    let curGuest = note.group[idx];
+    if (curGuest._id===guest._id.toString()) {
+      if (curGuest.mode===mode) {
+        errMessage = `Guest has already been invited to ${mode}.`;
+        return [errMessage, null];
+      }
+      else {
+        note.group[idx].mode = mode;
+        //Get shared Pages Of Guest, change guest shared page info
+        for (let sId=0; sId < guest.sharedPage.length; sId++) {
+          guest.sharedPage[sId].mode = mode;
+        }
+        let userId = guest._id.toString();
+        [errMessage, sharedUser] = await updateNote(note.group, noteId, guest.sharedPage, userId);
+        return [errMessage, sharedUser]
+      }
+    }
+  }
+  if (note.group.includes(guest._id.toString())) {
+    // if 
+    errMessage = "Guest has already been invited.";
+    return [errMessage, null];
+  } 
 
-  if (!!!note.group) note.group = [];
   let guestInfo = {
       "_id" : guest._id.toString(),
       "email" : guest.email,
-      "userName" : guest.userName
+      "userName" : guest.userName,
+      "mode": mode
     }
   note.group.push(guestInfo);
-  if (!!!guest.sharedPage) guest.sharedPage = [];
-  guest.sharedPage.push(noteId);
-  let updateNote = await dataBase
-    .collection("notes")
-    .updateOne({ _id: new ObjectId(noteId) }, { $set: { group: note.group } });
-  let updateGuest = await dataBase
-    .collection("user")
-    .updateOne({ _id: guest._id }, { $set: { sharedPage: guest.sharedPage } });
-  if (updateNote.modifiedCount === 1 && updateGuest.modifiedCount === 1) {
-    sharedUser = "";
-    for (guest of note.group) {
-      sharedUser += guest.userName + ", ";
+  // if (!!!guest.sharedPage) guest.sharedPage = [];
+  guest.sharedPage.push({"noteId":noteId, "mode":mode});
+  let userId = guest._id.toString();
+  [errMessage, sharedUser] = await updateNote(note.group, noteId, guest.sharedPage, userId);
+  return [errMessage, sharedUser]
+}
+
+function retriveGuestNames(guests) {
+  sharedViewers = "";
+  sharedEditors = "";
+  for (guestInfo of guests) {
+    if (guestInfo.mode==="view") {
+      sharedViewers += guestInfo.userName + ", ";
     }
-    return [null, sharedUser];
+    else {
+      sharedEditors += guestInfo.userName + ", ";
+    }
   }
-  errMessage = "Something went wrong. Please try again.";
-  return [errMessage, null];
+  if (sharedViewers!=="") {
+    sharedViewers = "Viewers: " + sharedViewers;
+  }
+  if (sharedEditors!=="") {
+    sharedEditors = "Editors: " + sharedEditors;
+  }
+  if (sharedEditors==="") {
+    return sharedViewers;
+  }
+  return sharedEditors + ";" + sharedViewers;
 }
 
 async function getUserNameById(userId) {
@@ -183,7 +229,7 @@ async function deleteGuest(noteId, delGuestEmail) {
   // console.log(guest);
   let guestSharedPage = guest.sharedPage
   let newSharedPage = guestSharedPage.filter((item)=>{
-    return item !== noteId;
+    return item.noteId !== noteId;
   })
   let delGuestRes = await dataBase
                       .collection("notes")
@@ -296,11 +342,11 @@ app.get("/api/notes/:userId/shared", async (req, res, next) => {
     const user = await dataBase
       .collection("user")
       .findOne({ _id: new ObjectId(req.params.userId) });
-    const sharedIds = user.sharedPage;
+    const sharedItems = user.sharedPage;
     let notes = [];
-    if (!!sharedIds) {
-      for (const id of sharedIds) {
-        const _note = await getNote(id);
+    if (!!sharedItems) {
+      for (const sharedItem of sharedItems) {
+        const _note = await getNote(sharedItem.noteId);
         let newNoteGroup = [];
         for (let _noteGroupItem of _note.group) {
             newNoteGroup.push(_noteGroupItem.userName);
@@ -387,7 +433,8 @@ app.post("/api/invite/:noteId", async (req, res, next) => {
   try {
     let [errMessage, sharedUser] = await shareNote(
       req.params.noteId,
-      req.body.guestEmail
+      req.body.guestEmail,
+      req.body.mode
     );
     if (errMessage) {
       res.writeHead(202);
@@ -405,21 +452,22 @@ app.post("/api/invite/:noteId", async (req, res, next) => {
 });
 
 
+
 app.get("/api/noteGuest/:noteId", async (req, res, next) => {
   try {
     let note = await getNote(req.params.noteId);
-    let guestsName = []
-    for (let guestInfo of note.group) {
-      guestsName.push(guestInfo.userName);
-    }
     if (!note) {
       res.writeHead(202);
       res.write("Note doesn't exist.");
       res.end();
     } else {
-      note = JSON.stringify(note);
+      let guestsName = []
+      for (let guestInfo of note.group) {
+        guestsName.push(guestInfo.userName);
+      }
+      let guestNames = retriveGuestNames(note.group);
       res.writeHead(200);
-      res.write(guestsName.toString());
+      res.write(guestNames);
       res.end();
     }
     next();
