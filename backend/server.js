@@ -170,20 +170,11 @@ function retriveGuestNames(guests) {
   sharedEditors = "";
   for (guestInfo of guests) {
     if (guestInfo.mode==="view") {
-      sharedViewers += guestInfo.userName + ", ";
+      sharedViewers += guestInfo.userName + " ";
     }
     else {
-      sharedEditors += guestInfo.userName + ", ";
+      sharedEditors += guestInfo.userName + " ";
     }
-  }
-  if (sharedViewers!=="") {
-    sharedViewers = "Viewers: " + sharedViewers;
-  }
-  if (sharedEditors!=="") {
-    sharedEditors = "Editors: " + sharedEditors;
-  }
-  if (sharedEditors==="") {
-    return sharedViewers;
   }
   return sharedEditors + ";" + sharedViewers;
 }
@@ -203,15 +194,14 @@ async function deleteGuest(noteId, delGuestEmail) {
   let note = await getNote(noteId);
   let newGuests = [];
   let delGuestId = null;
-  let newGuestNames = "";
   for (let guestItem of note.group) {
       if (guestItem.email === delGuestEmail) {
         delGuestId = guestItem._id;
         continue;
       }
       newGuests.push(guestItem);
-      newGuestNames += guestItem.userName + ", ";
   }
+  let newGuestNames = retriveGuestNames(newGuests)
   let errMessage;
   let newGuest;
   if (newGuests.length === note.group.length) {
