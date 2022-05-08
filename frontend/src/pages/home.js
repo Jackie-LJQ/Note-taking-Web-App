@@ -43,11 +43,11 @@ export default function Home({ user }) {
       
       <div className="ownedTitle">Your notes</div>
       <div className="ownedNotes">
-        <Notes notes={notes} />
+        <Notes notes={notes} role="Guests: "/>
       </div>
       <div className="sharedTitle">Notes shared with you</div>
       <div className="sharedNotes">
-        <Notes notes={sharedNotes} />
+        <Notes notes={sharedNotes} role="Author: "/>
       </div>
     </>
   );

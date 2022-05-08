@@ -1,7 +1,7 @@
 import './note.css'
 import { Link } from "react-router-dom";
 
-export default function note({note}) {
+export default function note({note, role}) {
   const timeString = new Date(note.timeStamp).toLocaleString();
   return (
     <div className="note">
@@ -11,7 +11,7 @@ export default function note({note}) {
             <span className="noteTitleBold">{note.title}</span>
             </Link>
             </div>            
-            <div className="noteGroup">
+            <div className="noteGroup"> {role}
               {note.group.length ? 
               note.group.map(p => 
                 <span className="noteGroup">{p}</span>

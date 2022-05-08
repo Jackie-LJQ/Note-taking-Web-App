@@ -182,12 +182,12 @@ function retriveGuestNames(guests) {
 async function getUserNameById(userId) {
   let user = await dataBase
     .collection("user")
-    .find({"_id" : new Object(userId)})
+    .find({"_id" : new ObjectID(userId)})
     .toArray();
-    if (userName.length===0) {
+    if (user.length===0) {
       return null;
     }
-    return user.userName;
+    return user[0].userName;
 }
 
 async function deleteGuest(noteId, delGuestEmail) {
@@ -203,7 +203,6 @@ async function deleteGuest(noteId, delGuestEmail) {
   }
   let newGuestNames = retriveGuestNames(newGuests)
   let errMessage;
-  let newGuest;
   if (newGuests.length === note.group.length) {
     errMessage = "Email haven't been invited."
     return [errMessage, null];
@@ -216,7 +215,6 @@ async function deleteGuest(noteId, delGuestEmail) {
     return [errMessage, null];
   }
   guest = guest[0];
-  // console.log(guest);
   let guestSharedPage = guest.sharedPage
   let newSharedPage = guestSharedPage.filter((item)=>{
     return item.noteId !== noteId;
@@ -337,11 +335,12 @@ app.get("/api/notes/:userId/shared", async (req, res, next) => {
     if (!!sharedItems) {
       for (const sharedItem of sharedItems) {
         const _note = await getNote(sharedItem.noteId);
-        let newNoteGroup = [];
-        for (let _noteGroupItem of _note.group) {
-            newNoteGroup.push(_noteGroupItem.userName);
-          }
-          _note.group = newNoteGroup;
+        // let newNoteGroup = [];
+        // for (let _noteGroupItem of _note.group) {
+        //     newNoteGroup.push(_noteGroupItem.userName);
+        //   }
+        let author = await getUserNameById(_note.author)
+        _note.group = [author];
         notes.push(_note);
       }
     }
