@@ -1,36 +1,45 @@
 import React, { useEffect, useState } from 'react'
 import TodoItem from './TodoItem'
 import "./TodoList.css"
+import axios from "axios"
 
 export default function TodoList() {
   const [todoItems, setItems] = useState([])
   const [todoContent, setTodoContent] = useState("")
+  const userId = localStorage.getItem("user")
+
   const onSubmit = (newItem) => {
     const newtodoItems = [...todoItems, newItem]
     setItems(newtodoItems);   
     setTodoContent("") 
   }
 
-  const handleAdd = ()=>{
-    if (todoContent===""){
+  const handleAdd = async ()=>{
+    if (todoContent.trim() === ""){
       return 
     }
     const newItem = {
-        _id: Math.floor(Math.random()*1000),
         content: todoContent,
-        isComplete: false
+        isCompleted: false
     }
+    let res = await axios.post(`/api/todoList/${userId}/create`, newItem)
+    let itemId = res.data
+    newItem._id = itemId;
     onSubmit(newItem)
   }
 
-  const completeItem = (_id)=>{
-    let updatedTodos = todoItems.map(item => {
-      if (item._id === _id) {
-        item.isComplete = !item.isComplete;
-      }
-      return item;
-    });
-    setItems(updatedTodos)
+  const completeItem = (_id, isCompleted)=>{
+    console.log(isCompleted)
+    let updateTodoItem = async ()=>{
+      let res = await axios.post(`/api/todoList/${_id}/update`, 
+        {
+          isCompleted: !isCompleted,
+          userId: userId
+        })
+      let updatedTodos = res.data
+      setItems(updatedTodos)
+    }
+    updateTodoItem()
   }
 
   const deleteItem = (_id) =>{
@@ -38,6 +47,16 @@ export default function TodoList() {
     setItems(updatedTodos)
   }
 
+
+  useEffect(()=>{
+    let getTodoList = async()=>{
+      let res = await axios.get(`/api/todoList/${userId}`)
+      let todoList = res.data
+      setItems(todoList)
+      return todoList
+    } 
+    getTodoList()
+  })
   return (
     <div className='todoList'>
       <TodoItem items={todoItems} completeItem={completeItem} deleteItem={deleteItem}/>

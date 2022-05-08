@@ -5,7 +5,7 @@ import Home from './pages/home';
 import NotePage from './pages/notepage';
 import Tutorial from './pages/tutorial';
 import TopBar from "./components/topbar";
-
+import TodoList from './components/TodoList';
 import { Switch, Route, Redirect} from "react-router-dom";
 import { useState } from "react"
 
@@ -19,7 +19,9 @@ function App() {
   let [user, setUser] = useState(initUser)
   return (
       <>
-      <TopBar user={user} setUser={setUser}/>
+      <TodoList />
+      
+      {/* <TopBar user={user} setUser={setUser}/>
       <Switch>
         <Route exact path="/register"> { user ? <Home user={user} /> : <Register /> } </Route>
         <Route exact path="/login"> { user ? <Home user={user}/> : <Login /> } </Route>
@@ -27,7 +29,7 @@ function App() {
         <Route path="/note/:pageid"> {user ? <NotePage /> : <Login />} </Route>
         <Route exact path="/tutorial"> <Tutorial /> </Route> 
         <Route path="/"> {user ? <Redirect to="/home"/> : <Redirect to="/login"/>} </Route> 
-      </Switch>
+      </Switch> */}
       </>
   );
 }
