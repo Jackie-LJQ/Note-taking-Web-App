@@ -11,6 +11,7 @@ export default function NotePage(){
     let [content, setContent]  = useState("")
     let [timeStamp, setTimeStamp] = useState("")
     let [ownership, setOwnership] = useState(false)
+    let [editCredential, setEditCredential] = useState(false)
     let [noteId, setNoteId] = useState(location.pathname.split("/")[2])
     const [isOpen, setOpen] = useState(false)
     
@@ -22,6 +23,12 @@ export default function NotePage(){
             setTitle(noteInfo.title)
             setTimeStamp(noteInfo.timeStamp)
             setOwnership(localStorage.getItem("user") === noteInfo.author)
+            for (let guestInfo of noteInfo.group) {
+                if (guestInfo._id === localStorage.getItem("user") && guestInfo.mode==="edit") {
+                    setEditCredential(true)
+                }
+            }
+            
             setNoteId(noteId)
         }
         const createNote = async ()=>{
@@ -74,7 +81,7 @@ export default function NotePage(){
         <div className="notepage">    
             <div className="editDate">Last Edit at: {new Date(timeStamp).toLocaleString()}</div>
             <div className="pageIcon">            
-                {ownership&&!editMode ? <i className="pageIconItem fa-solid fa-square-pen" onClick={(e)=>{setEditMode(true)}}></i> : <></>}
+                {(editCredential||ownership) &&!editMode ? <i className="pageIconItem fa-solid fa-square-pen" onClick={(e)=>{setEditMode(true)}}></i> : <></>}
                 {editMode ? <i className="pageIconItem fa-solid fa-floppy-disk" onClick={handleSave}></i> : <></>}
                 {ownership ? <i className="pageIconItem fa-solid fa-trash-can" onClick={handleDelete}></i> : <></>}
                 {ownership ? 
