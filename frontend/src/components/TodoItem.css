@@ -1,0 +1,22 @@
+.icon {    
+    margin-left: 10px;
+}
+
+.check{
+    color: rgb(10, 118, 213);
+}
+
+.trash{
+    color: red;
+}
+
+.completedcontent{
+    display: inline;
+    color: green;
+}
+
+.incompletedcontent{
+    display: inline;
+    color: black;
+    font: bold;
+}
