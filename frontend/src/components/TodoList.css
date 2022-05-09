@@ -1,31 +1,41 @@
-.todoList{
-    position: absolute;
-    top: 50px;
-    right: 0px;
-    background-color: white;
-    padding: 10px;
-    padding-bottom: 40px;
-    width: 200px;
-    border: solid;
-    border-color: rgb(125, 125, 125, .7);
+.todoList {
+  position: absolute;
+  top: 50px;
+  right: 0px;
+  background-color: white;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-bottom: 40px;
+  width: 200px;
+  border: solid;
+  border-width: 2px;
+  border-radius: 7px;
+  border-color: rgb(125, 125, 125, 0.7);
 }
 
 .todoListHeader {
-    margin-left: 50px;
-    font-size: 20px;    
-    margin-bottom: 10px;
+  margin-left: 50px;
+  font-size: 20px;
+  margin-bottom: 10px;
 }
 
-.inputContainer{
- position: absolute; 
- margin-top: 10px;
+.inputContainer {
+  position: absolute;
+  margin-top: 10px;
 }
 
-.todoInput{    
-    width: 140px;
-} 
+.todoInput {
+  width: 140px;
+  border: solid;
+  border-width: 1px;
+  border-radius: 2px;
+  border-color: #ccc;
+}
 
-.addTodoItem{
-    margin-left: 5px;
-}  
-
+.addTodoItem {
+  margin-left: 10px;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  background-color: #2ba54a;
+}

@@ -13,10 +13,28 @@
 .completedcontent{
     display: inline;
     color: green;
+    width: 50px;
 }
 
 .incompletedcontent{
     display: inline;
     color: black;
+    width: 50px;
 }
 
+.singleRow{
+    display: flex;
+}
+
+.itemWrapper{
+    flex: 7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.iconWrapper{
+    flex: 3;
+}
