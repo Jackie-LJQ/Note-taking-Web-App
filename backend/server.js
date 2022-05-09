@@ -10,14 +10,14 @@ const PORT = 8000;
 const { MongoClient, ObjectId, ConnectionClosedEvent } = require("mongodb");
 //MongoClient.connect(uri, (err, mongoConnect) => {
 MongoClient.connect(uri_docDB, {tlsCAFile: `rds-combined-ca-bundle.pem`},(err, mongoConnect) => {
-        if (err) {
-            process.exit(5);
-        }
-        dataBase = mongoConnect.db("notesWebApp");
-        app.listen(PORT);
-        console.log(`Server started, port ${PORT}`);
-    });
-}
+    if (err) {
+        process.exit(5);
+    }
+    dataBase = mongoConnect.db("notesWebApp");
+    app.listen(PORT);
+    console.log(`Server started, port ${PORT}`);
+});
+
 
 async function registerUser(params) {
   let email = params.email;
