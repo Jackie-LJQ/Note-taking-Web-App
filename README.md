@@ -7,7 +7,7 @@ nodemon server.js
 Run frontend web page:
 ```
 cd frontend
-npn start
+npm start
 ```
 Environment: 
 use docker image `mongodb:5`

@@ -4,17 +4,20 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 var uri = "mongodb://localhost:27017";
+const uri_docDB = 'mongodb://EE547:12345678@docdb-2022-05-07-23-01-41.cluster-c76bpesfobkc.us-west-2.docdb.amazonaws.com:27017/?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false'
 const PORT = 8000;
 
 const { MongoClient, ObjectId, ConnectionClosedEvent } = require("mongodb");
-MongoClient.connect(uri, (err, mongoConnect) => {
-  if (err) {
-    process.exit(5);
-  }
-  dataBase = mongoConnect.db("notesWebApp");
-  app.listen(PORT);
-  console.log(`Server started, port ${PORT}`);
-});
+//MongoClient.connect(uri, (err, mongoConnect) => {
+MongoClient.connect(uri_docDB, {tlsCAFile: `rds-combined-ca-bundle.pem`},(err, mongoConnect) => {
+        if (err) {
+            process.exit(5);
+        }
+        dataBase = mongoConnect.db("notesWebApp");
+        app.listen(PORT);
+        console.log(`Server started, port ${PORT}`);
+    });
+}
 
 async function registerUser(params) {
   let email = params.email;
