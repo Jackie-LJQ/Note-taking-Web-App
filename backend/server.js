@@ -249,9 +249,9 @@ async function updateTodoItem(_Tid, isCompleted) {
       .collection("todoLists")
       .updateOne({_id : new ObjectID(_Tid)}, 
       {$set:{isCompleted : isCompleted}})
-  if (updateTodo.modifiedCount !== 1) {
-    throw new Error("Updata Todo List Failed")
-  }
+  // if (updateTodo.modifiedCount !== 1) {
+  //   throw new Error("Updata Todo List Failed")
+  // }
 }
 
 async function getTodoList(userId){
@@ -260,6 +260,15 @@ async function getTodoList(userId){
       .find({"userId":userId})
       .toArray()
   return todoList;
+}
+
+async function deleteTodoItem(_Tid) {
+  let updateTodo = await dataBase
+    .collection("todoLists")
+    .deleteOne({"_id":new ObjectID(_Tid)});
+  // if (updateTodo.deletedCount===0) {
+  //   throw new Error("Failed to delete todoList Item.");
+  // }
 }
 
 app.get("/api/ping", (req, res, next) => {
@@ -552,6 +561,18 @@ app.get("/api/todoList/:userId", async(req, res, next)=>{
     res.writeHead(200);
     res.write(JSON.stringify(todoLists));
     res.end()
+    next();
+  } catch(err) {
+    throw err;
+  }
+})
+
+app.delete("/api/todoList/:todoItemId", async (req, res, next)=>{
+  try {
+    let _Tid = req.params.todoItemId;
+    await deleteTodoItem(_Tid);
+    res.writeHead(200);
+    res.end();
     next();
   } catch(err) {
     throw err;

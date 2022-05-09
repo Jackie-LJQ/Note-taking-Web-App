@@ -44,7 +44,13 @@ export default function TodoList() {
 
   const deleteItem = (_id) =>{
     let updatedTodos = todoItems.filter(item=>item._id!==_id)
-    setItems(updatedTodos)
+    let deleteTodoItem = async ()=>{
+      let res = await axios.delete(`/api/todoList/${_id}`)
+      if (res.status===200) {
+        setItems(updatedTodos)
+      }
+    }
+    deleteTodoItem()
   }
 
 
@@ -58,9 +64,14 @@ export default function TodoList() {
     getTodoList()
   })
   return (
-    <div className='todoList'>
+    <div className='todoWraper'>
+    
+    <div className='todoList'>      
+      <div className='todoListHeader'>To-Do List</div>
+      <div></div>
       <TodoItem items={todoItems} completeItem={completeItem} deleteItem={deleteItem}/>
       <div className='inputBar'>
+      <div className='inputContainer'>
       <input 
         className='todoInput'
         placeholder='Add a todo...' 
@@ -68,10 +79,12 @@ export default function TodoList() {
         value={todoContent}
       >
       </input>
-      <i className="addicon fa-solid fa-plus"
-          onClick={handleAdd}>
-      </i>
+      <button className="addTodoItem"
+          onClick={handleAdd}>Add
+      </button>
+      </div>
       </div>
     </div>    
+    </div>
   )
 }

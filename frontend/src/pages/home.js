@@ -14,7 +14,7 @@ export default function Home({ user }) {
       setNotes(res.data);
     };
     fetchNotes();
-  }, []);
+  });
 
   useEffect(() => {
     const fetchSharedNotes = async () => {
@@ -22,7 +22,7 @@ export default function Home({ user }) {
       setSharedNotes(res.data);
     };
     fetchSharedNotes();
-  }, []);
+  });
 
   const createNewNote = () => {
     window.location.replace("/note/create");

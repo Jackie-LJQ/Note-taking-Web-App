@@ -19,17 +19,23 @@ function App() {
   let [user, setUser] = useState(initUser)
   return (
       <>
-      <TodoList />
-      
-      {/* <TopBar user={user} setUser={setUser}/>
+      <TopBar user={user} setUser={setUser}/>
       <Switch>
         <Route exact path="/register"> { user ? <Home user={user} /> : <Register /> } </Route>
         <Route exact path="/login"> { user ? <Home user={user}/> : <Login /> } </Route>
-        <Route path="/home"> {user ? <Home user={user}/> : <Login />} </Route>
+        <Route path="/home"> {
+          user ? 
+          <>
+            <Home user={user}/> 
+            <TodoList /> 
+          </> : 
+          <Login />
+          } 
+        </Route>
         <Route path="/note/:pageid"> {user ? <NotePage /> : <Login />} </Route>
         <Route exact path="/tutorial"> <Tutorial /> </Route> 
         <Route path="/"> {user ? <Redirect to="/home"/> : <Redirect to="/login"/>} </Route> 
-      </Switch> */}
+      </Switch>
       </>
   );
 }
