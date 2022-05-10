@@ -1,0 +1,34 @@
+.TutorialPage{
+    position: absolute;
+    left: 20%;
+    width:60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 60px;
+}
+
+.TutorialTitle{
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.TutorialTitle_1{
+    font-size: 25px;
+    font-weight: 400;
+    margin: 0px;
+}
+
+.funcdesc{
+    font-size: 15px;
+    margin: 0px;
+}
+
+.functions{
+    font-size: 22px;
+}
+
+.BoldPart{
+    font-weight: 700;
+    font-style: italic;
+}

@@ -4,6 +4,7 @@ import Notes from "../components/notes";
 import Header from "../components/header";
 import "./home.css";
 
+
 export default function Home({ user }) {
   const [notes, setNotes] = useState([]);
   const [sharedNotes, setSharedNotes] = useState([]);
