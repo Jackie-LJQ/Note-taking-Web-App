@@ -8,8 +8,8 @@ const uri_docDB = 'mongodb://EE547:12345678@docdb-2022-05-07-23-01-41.cluster-c7
 const PORT = 8000;
 
 const { MongoClient, ObjectId, ConnectionClosedEvent } = require("mongodb");
-//MongoClient.connect(uri, (err, mongoConnect) => {
-MongoClient.connect(uri_docDB, {tlsCAFile: `rds-combined-ca-bundle.pem`},(err, mongoConnect) => {
+MongoClient.connect(uri, (err, mongoConnect) => {
+// MongoClient.connect(uri_docDB, {tlsCAFile: `rds-combined-ca-bundle.pem`},(err, mongoConnect) => {
     if (err) {
         process.exit(5);
     }

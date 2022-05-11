@@ -1,37 +1,50 @@
-Run backend:
-Expose port 3000 27017
+1.Start backend service:
+Expose port 8000 27017
 ```
 cd backend
+npm install
 nodemon server.js
 ```
-Run frontend web page:
+2.Start frontend service:
 ```
 cd frontend
+npm install
 npm start
 ```
 Environment: 
 use docker image `mongodb:5`
 
-View different web page:
-Currently only support change compoent tag in `Note-taking-Web-App/frontend/src/App.js`
+Dependency:
+Node
+mongo
 
 
-Reference:
-- React Blog
-    - UI: https://www.youtube.com/watch?v=tlTdbc5byAs
-    - Interface with backend https://www.youtube.com/watch?v=LelifxOrzvw&list=PLj-4DlPRT48lGpll2kC4wOsLj7SEV_lYu&index=3
-- CSS style:
-    - center block: https://www.youtube.com/watch?v=Ba-Ly1EQg2A
-- React Basic
-    - https://reactjs.org/docs/introducing-jsx.html
-- Router
-    - link pages: https://v5.reactrouter.com/web/guides/quick-start
-
-ToDo:
-[ ] Home Page
-[ ] Take Note Page 
-[ ] Share Page 
-[ ] About Page
-[x] Register Page 
-[x] Login Page
-[ ] their interface with server
+File Layout
+Noting-taking-Web-Application
+  |- backend
+  |  |- server.js
+  |  |- package.js
+  |  |- node_modules
+  |- frontend
+  |  |- public
+  |    |- index.html
+  |     |- images
+  |  |- src
+  |    |- components
+  |    | |- herder (js&css)
+  |    | |- note (js&css)
+  |    | |- popup (js&css)
+  |    | |- TodoItem (js&css)
+  |    | |- TodoList (js&css)
+  |    | |- topbar (js&css)
+  |    |- pages
+  |    |  |- register (js&css)
+  |    |  |- login (js&css)
+  |    |  |- tutorial (js&css)
+  |    |  |- home (js&css)
+  |    |  |- notepage (js&css)
+  |    |- App (js&css)
+  |    |- index (js&css)
+  |    |- package.json
+  |    |- node_modules
+  |- README.md
