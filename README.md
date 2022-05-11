@@ -19,7 +19,8 @@ Node
 mongo
 
 
-File Layout
+File Layout:
+```
 Noting-taking-Web-Application
   |- backend
   |  |- server.js
@@ -48,3 +49,4 @@ Noting-taking-Web-Application
   |    |- package.json
   |    |- node_modules
   |- README.md
+```
