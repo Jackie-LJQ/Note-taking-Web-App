@@ -1,6 +1,5 @@
 import "./register.css"
 import React, { useState } from "react";
-import { Link } from "react-router-dom"
 import axios from "axios";
 
 export default function Register() {
@@ -26,7 +25,7 @@ export default function Register() {
         }
         setErrMessage("")
         try {
-            const res = await axios.post(`/api/register`, {
+            const res = await axios.post(`/user/register`, {
                 username:username,
                 email:email,
                 password:password,

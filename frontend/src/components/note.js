@@ -13,8 +13,8 @@ export default function note({note, role}) {
             </div>            
             <div className="noteGroup"> {role}
               {note.group.length ? 
-              note.group.map(p => 
-                <span className="noteGroup">{p}</span>
+              note.group.map((p, idx) => 
+                <span className="noteGroup" key={idx}>{p}</span>
               ) : <span className="noteGroup"></span>}                
             </div>
             <span className="noteDate">{timeString}</span>

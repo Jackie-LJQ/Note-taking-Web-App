@@ -55,11 +55,11 @@ export default function PopUp({open, onClose}) {
             setShared(res.data)
         }
         getShared()
-    },[open])
+    },[open, noteId])
 
     useEffect(()=>{
         setErrMessage(null)
-    },[open])
+    },[open, noteId])
 
 
     if (!open) {

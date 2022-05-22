@@ -1,6 +1,5 @@
 import "./login.css"
 import React, { useState } from "react";
-import { Link } from "react-router-dom"
 import axios from "axios"
 export default function Login() {
     let [password, setPassword] = useState()
@@ -10,7 +9,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            let res = await axios.post("/api/login", {
+            let res = await axios.post("/user/login", {
                 email:email,
                 password:password
             })

@@ -21,18 +21,18 @@ function App() {
       <>
       <TopBar user={user} setUser={setUser}/>
       <Switch>
-        <Route exact path="/register"> { user ? <Home user={user} /> : <Register /> } </Route>
-        <Route exact path="/login"> { user ? <Home user={user}/> : <Login /> } </Route>
+        <Route exact path="/register"> { user ? <Redirect to="/home" user={user} /> : < Register /> } </Route>
+        <Route exact path="/login"> { user ? <Redirect to="/home" user={user}/> : <Login /> } </Route>
         <Route path="/home"> {
           user ? 
           <>
             <Home user={user}/> 
             <TodoList /> 
           </> : 
-          <Login />
+          <Redirect to="/login" />
           } 
         </Route>
-        <Route path="/note/:pageid"> {user ? <NotePage /> : <Login />} </Route>
+        <Route path="/note/:pageid"> {user ? <NotePage /> : <Redirect to="/login" />} </Route>
         <Route exact path="/tutorial"> <Tutorial /> </Route> 
         <Route path="/"> {user ? <Redirect to="/home"/> : <Redirect to="/login"/>} </Route> 
       </Switch>
