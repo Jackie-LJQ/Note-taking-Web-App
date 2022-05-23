@@ -1,46 +1,40 @@
 const { ObjectID } = require("bson");
 const express = require("express");
+const mongoose = require("mongoose")
+const cookieparser = require("cookie-parser")
+const userRoute = require("./routes/user")
+// const noteRoute = require("./routes/note")
+
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-var uri = "mongodb://localhost:27017";
+app.use(cookieparser());
+app.use("/user", userRoute);
+var uri = "mongodb://localhost:27017/notesWebApp";
 const uri_docDB = 'mongodb://EE547:12345678@docdb-2022-05-07-23-01-41.cluster-c76bpesfobkc.us-west-2.docdb.amazonaws.com:27017/?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false'
 const PORT = 8000;
 
-const { MongoClient, ObjectId, ConnectionClosedEvent } = require("mongodb");
-MongoClient.connect(uri, (err, mongoConnect) => {
-// MongoClient.connect(uri_docDB, {tlsCAFile: `rds-combined-ca-bundle.pem`},(err, mongoConnect) => {
+mongoose.connect(uri).then((connect)=>{
+  app.listen(PORT);
+  console.log(`Server started, port ${PORT}`);
+}).catch((err)=>{
+  console.log(err);
+})
+
+function authenticateToken(req, res, next) {
+  const token = req.cookies.token;
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
     if (err) {
-        process.exit(5);
+      console.log("User email has not been verified.")
+      return res.sendStatus(403);
     }
-    dataBase = mongoConnect.db("notesWebApp");
-    app.listen(PORT);
-    console.log(`Server started, port ${PORT}`);
-});
+    req.user = user;
+    next();
+  })
+}
 
-
-async function registerUser(params) {
-  let email = params.email;
-  let userName = params.username;
-  let passWord = params.password;
-  let existUser = await dataBase
-    .collection("user")
-    .find({ email: email })
-    .toArray();
-  if (existUser.length != 0) {
-    return [`${email} has registered. Please use login!`, null];
-  }
-
-  let res = await dataBase
-    .collection("user")
-    .insertOne({
-      email: email,
-      userName: userName,
-      password: passWord,
-      sharedPage: [],
-    });
-  let Uid = await res.insertedId.toString();
-  return [null, Uid];
+function createToken(id) {
+  return jwt.sign({id}, process.env.ACCESS_TOKEN_SECRET);
 }
 
 async function postNote(title, content, author, noteId) {
@@ -283,65 +277,6 @@ app.get("/api/ping", (req, res, next) => {
 
 
 
-app.post("/api/login", async (req, res, next) => {
-  // curl -X POST -H "Content-Type: application/json" -d '{"email":"123@gmail.com", "password":"123"}' http://localhost:3000/login
-  // db.user.find({"email":"jiaqi@usc.edu"})
-  try {
-    let email = req.body.email;
-    let passWord = req.body.password;
-    let existUser = await getUserByEmail(email);
-    if (!existUser) {
-      res.writeHead(406);
-      res.write("Account doesn't exists. Please register.");
-      res.end();
-      return next();
-    }
-    if (existUser.password !== passWord) {
-      res.writeHead(400);
-      res.write("Password is incorrect.");
-      res.end();
-    } else {
-      const user = {
-        id: existUser._id.toString(),
-        name: existUser.userName,
-        email: existUser.email,
-      };
-      res.writeHead(200);
-      res.write(JSON.stringify(user));
-      res.end();
-    }
-    next();
-  } catch (err) {
-    throw err;
-  }
-});
-
-app.post("/api/register", (req, res, next) => {
-  // curl -X POST -H "Content-Type: application/json" -d '{"email":"123@gmail.com","username":"jq", "password":"123"}' http://localhost:3000/register
-  try {
-    registerUser(req.body).then((ret) => {
-      let message = ret[0];
-      let Uid = ret[1];
-      if (message) {
-        res.writeHead(202);
-        res.write("Register Failed. " + message + "\n");
-        res.end();
-      } else {
-        const user = {
-          id: Uid.toString(),
-          name: req.body.username,
-          email: req.body.email,
-        };
-        res.writeHead(200);
-        res.write(JSON.stringify(user));
-        res.end();
-      }
-      next();
-    });
-  } catch (err) {
-    throw err;
-  }
-});
 
 app.get("/api/notes/:userId", async (req, res, next) => {
   try {
