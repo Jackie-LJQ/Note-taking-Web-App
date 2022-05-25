@@ -17,7 +17,7 @@ export default function NotePage(){
     
     useEffect(()=>{
         const getNote = async ()=>{
-            const res = await axios.get("/api/note/"+noteId)
+            const res = await axios.get("/note/view/"+noteId)
             const noteInfo = res.data
             setContent(noteInfo.content)
             setTitle(noteInfo.title)
@@ -33,7 +33,7 @@ export default function NotePage(){
         }
         const createNote = async ()=>{
             let author = localStorage.getItem("user")
-            const res = await axios.post("/api/createNew", {
+            const res = await axios.post("/note/createNew", {
                 author:author
             })
             let newDate = new Date()
@@ -54,7 +54,7 @@ export default function NotePage(){
 
     const handleSave = async() => {
         try {
-            axios.post("/api/note/"+noteId, {
+            axios.post("/note/write/"+noteId, {
                 title:title || "No Title",
                 content:content || "No content"           
             })
@@ -66,7 +66,7 @@ export default function NotePage(){
 
     const handleDelete = async() => {
         try {
-            let res = await axios.delete("/api/note/"+noteId)
+            let res = await axios.delete("/note/"+noteId)
             if (res.status===200) {
                 window.location.replace("/home")
             }

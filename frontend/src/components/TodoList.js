@@ -22,7 +22,7 @@ export default function TodoList() {
         content: todoContent,
         isCompleted: false
     }
-    let res = await axios.post(`/api/todoList/${userId}/create`, newItem)
+    let res = await axios.post(`/todoList/create/${userId}`, newItem)
     let itemId = res.data
     newItem._id = itemId;
     onSubmit(newItem)

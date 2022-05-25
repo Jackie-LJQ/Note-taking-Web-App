@@ -17,13 +17,13 @@ export default function PopUp({open, onClose}) {
         let res
         if (mode === "view")        
         {
-            res = await axios.post(`/api/invite/${noteId}`, {
+            res = await axios.post(`/note/invite/${noteId}`, {
                 "guestEmail":guestViewEmail,
                 "mode":"view"
             })
         }
         else {
-            res = await axios.post(`/api/invite/${noteId}`, {
+            res = await axios.post(`/note/invite/${noteId}`, {
                 "guestEmail":guestEditEmail,
                 "mode":"edit"
             })
@@ -38,7 +38,7 @@ export default function PopUp({open, onClose}) {
         }
     }
     const handleDelete = async()=>{
-        let res = await axios.post("/api/deleteGuest/"+noteId, {
+        let res = await axios.post("/note/deleteGuest/"+noteId, {
             delGuest:delGuest
         })
         if (res.status===202) {
@@ -51,7 +51,7 @@ export default function PopUp({open, onClose}) {
     }
     useEffect(()=>{
         const getShared = async ()=>{
-            let res = await axios.get("/api/noteGuest/"+noteId)
+            let res = await axios.get("/note/noteGuest/"+noteId)
             setShared(res.data)
         }
         getShared()

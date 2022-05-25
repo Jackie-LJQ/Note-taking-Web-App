@@ -11,7 +11,7 @@ export default function Home({ user }) {
 
   useEffect(() => {
     const fetchNotes = async () => {
-      const res = await axios.get(`/api/notes/${user}`);
+      const res = await axios.get(`/note/${user}`);
       setNotes(res.data);
     };
     fetchNotes();
@@ -19,7 +19,7 @@ export default function Home({ user }) {
 
   useEffect(() => {
     const fetchSharedNotes = async () => {
-      const res = await axios.get(`/api/notes/${user}/shared`);
+      const res = await axios.get(`/note/${user}/shared`);
       setSharedNotes(res.data);
     };
     fetchSharedNotes();

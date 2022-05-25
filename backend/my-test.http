@@ -1,12 +1,89 @@
-@host =  http://localhost:8000/api
+@host =  http://localhost:8000
 
 get {{host}}/ping
 
 ###
-post {{host}}/register
+#register account
+post {{host}}/user/register
 Content-Type: application/json
 
 {
-    "username": "1236mcvskm",
-    "password": "12345L"
+    "username": "h",
+    "email": "h@usc.edu",
+    "password": "1234L"
 }
+
+###
+#create new note
+post {{host}}/note/createNew
+Content-Type: application/json
+
+{
+    "author": "628afc5c27b62c5f3696bd05"
+}
+
+###
+#write note
+post {{host}}/note/write/628c8c83207d06cf56aa9e91
+Content-Type: application/json
+
+{
+    "title": "rest client",
+    "content": "rest plugin"
+}
+
+###
+#get all notes
+get {{host}}/note/view/628b338ebffe8ed387b55a49
+
+
+###
+#delete note
+delete {{host}}/note/628b338ebffe8ed387b55a49
+
+###
+#share note
+post {{host}}/share/invite/628c8c83207d06cf56aa9e91
+Content-Type: application/json
+
+{
+    "guestEmail":"h@usc.edu",
+    "mode":"write"
+}
+
+###
+# delete guest
+post {{host}}/share/deleteGuest/628c8c83207d06cf56aa9e91
+Content-Type: application/json
+
+{
+    "delGuest" : "h@usc.edu"
+}
+
+###
+# add todo task
+post {{host}}/todoList/addTodo/628b2d9f991f3828d9af0099
+Content-Type: application/json
+
+{
+    "content" : "do math test",
+    "isCompleted": true
+}
+
+###
+#get all to-do list
+get {{host}}/todoList/628b2d9f991f3828d9af0099
+
+###
+#update to-do task
+post {{host}}/todoList/update/628dada25a9e849a0eda7f97
+Content-Type: application/json
+
+{
+    "isCompleted":true,
+    "userId":"628b2d9f991f3828d9af0099"
+}
+
+###
+# delete to-do task
+delete {{host}}/todoList/628dada25a9e849a0eda7f97
