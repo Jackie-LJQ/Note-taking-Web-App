@@ -17,6 +17,9 @@ export default function NotePage(){
     
     useEffect(()=>{
         const getNote = async ()=>{
+            if (noteId==="create") {
+                return;
+            }
             const res = await axios.get("/note/view/"+noteId)
             const noteInfo = res.data
             setContent(noteInfo.content)
@@ -40,23 +43,22 @@ export default function NotePage(){
             newDate = newDate.toString()
             setTimeStamp(newDate)
             setOwnership(true)
-            console.log(res.data)
             setNoteId(res.data)
             setEditMode(true)
         }
-        if (noteId !== "create"){
-            getNote()
-        }
-        else if (noteId==="create") {
+        if (noteId==="create"){
             createNote()
+        }
+        else if (noteId!=="createNew") {
+            getNote()
         }
     },[noteId])
 
     const handleSave = async() => {
         try {
             axios.post("/note/write/"+noteId, {
-                title:title || "No Title",
-                content:content || "No content"           
+                title:(title || "No Title"),
+                content:(content || "No content")           
             })
             window.location.replace("/note/"+noteId)
         }catch(err) {
@@ -88,7 +90,6 @@ export default function NotePage(){
                 <>
                     <i className="pageIconItem fa-solid fa-share-nodes" onClick={()=>{setOpen(true)}}></i> 
                     <PopUp className="popUp" open={isOpen} onClose={()=>{setOpen(false)}}>Fancy popUp</PopUp>
-                    {/* <p className="popUp">cbadioni</p> */}
                 </>
                 : <></>}
             </div>

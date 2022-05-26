@@ -33,8 +33,10 @@ Content-Type: application/json
 }
 
 ###
-#get all notes
-get {{host}}/note/view/628b338ebffe8ed387b55a49
+# view note
+get {{host}}/note/view/628f1f446ab88bb02d07dd8b
+
+
 
 
 ###

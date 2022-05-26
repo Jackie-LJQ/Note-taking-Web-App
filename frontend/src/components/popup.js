@@ -17,13 +17,13 @@ export default function PopUp({open, onClose}) {
         let res
         if (mode === "view")        
         {
-            res = await axios.post(`/note/invite/${noteId}`, {
+            res = await axios.post(`/share/invite/${noteId}`, {
                 "guestEmail":guestViewEmail,
                 "mode":"view"
             })
         }
         else {
-            res = await axios.post(`/note/invite/${noteId}`, {
+            res = await axios.post(`/share/invite/${noteId}`, {
                 "guestEmail":guestEditEmail,
                 "mode":"edit"
             })
@@ -38,7 +38,7 @@ export default function PopUp({open, onClose}) {
         }
     }
     const handleDelete = async()=>{
-        let res = await axios.post("/note/deleteGuest/"+noteId, {
+        let res = await axios.post("/share/deleteGuest/"+noteId, {
             delGuest:delGuest
         })
         if (res.status===202) {
@@ -51,8 +51,10 @@ export default function PopUp({open, onClose}) {
     }
     useEffect(()=>{
         const getShared = async ()=>{
-            let res = await axios.get("/note/noteGuest/"+noteId)
-            setShared(res.data)
+            if (noteId!=="create"){
+                let res = await axios.get("/share/showGuests/"+noteId)
+                setShared(res.data)
+            }            
         }
         getShared()
     },[open, noteId])
@@ -99,12 +101,10 @@ export default function PopUp({open, onClose}) {
                 {
                     shared ? 
                         <>
-                        {/* <div>Current Guests: </div> */}
-                        {/* <i class="fa-solid fa-people-group"></i> */}
-                        {shared.split(";")[0]!=="" ? <i class="fa-solid fa-user-pen"></i> : <></>}
+                        {shared.split(";")[0]!=="" ? <i className="fa-solid fa-user-pen"></i> : <></>}
                         <span className='guestName'>{shared.split(";")[0]}</span> 
                         <div></div>
-                        {shared.split(";")[1]!=="" ? <i class="fa-solid fa-eye"></i> : <></>}
+                        {shared.split(";")[1]!=="" ? <i className="fa-solid fa-eye"></i> : <></>}
                         <span className='guestName'>{shared.split(";")[1]}</span> 
                         </>
                 : <></>

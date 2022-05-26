@@ -5,8 +5,10 @@ const { ObjectId } = require("mongodb");
 const router = express.Router()
 
 
-  
-
+async function getNote(noteId) {
+  let note = Note.findOne({ "_id": new ObjectId(noteId) });
+  return note;
+}
 
 async function getUserNameById(userId) {
   let user = User.findOne({"_id":new ObjectId(userId)})

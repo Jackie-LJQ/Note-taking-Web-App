@@ -22,16 +22,15 @@ export default function TodoList() {
         content: todoContent,
         isCompleted: false
     }
-    let res = await axios.post(`/todoList/create/${userId}`, newItem)
+    let res = await axios.post(`/todoList/addTodo/${userId}`, newItem)
     let itemId = res.data
     newItem._id = itemId;
     onSubmit(newItem)
   }
 
   const completeItem = (_id, isCompleted)=>{
-    console.log(isCompleted)
     let updateTodoItem = async ()=>{
-      let res = await axios.post(`/api/todoList/${_id}/update`, 
+      let res = await axios.post(`/todoList/update/${_id}`, 
         {
           isCompleted: !isCompleted,
           userId: userId
@@ -45,7 +44,7 @@ export default function TodoList() {
   const deleteItem = (_id) =>{
     let updatedTodos = todoItems.filter(item=>item._id!==_id)
     let deleteTodoItem = async ()=>{
-      let res = await axios.delete(`/api/todoList/${_id}`)
+      let res = await axios.delete(`/todoList/${_id}`)
       if (res.status===200) {
         setItems(updatedTodos)
       }
@@ -56,7 +55,7 @@ export default function TodoList() {
 
   useEffect(()=>{
     let getTodoList = async()=>{
-      let res = await axios.get(`/api/todoList/${userId}`)
+      let res = await axios.get(`/todoList/${userId}`)
       let todoList = res.data
       setItems(todoList)
       return todoList
